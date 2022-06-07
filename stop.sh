@@ -5,8 +5,8 @@ echo "Les services suivants vont être arrêtés :"
 echo ;
 echo "* Apache tomcat 9.0.55"
 # echo "* BDD Postgreql"
-echo "* HP-INDUS Bachend"
-# echo "* HP-INDUS Frontend"
+echo "* HP-INDUS-BACKEND"
+echo "* HP-INDUS-FRONTED"
 echo ;
 
 #Extinction de tomcat
@@ -18,7 +18,8 @@ echo ;
 echo ;
 
 #Extinction des applications
-echo "EXTINCTION DE HP-INDUS Backend - PID : " $(cat ./pid.file)
+#HP-Indus-Backend
+echo "EXTINCTION DE HP-INDUS-BACKEND - PID : " $(cat ./pid.file)
 kill $(cat ./pid.file)
 echo ;
 
@@ -27,4 +28,9 @@ wait -n $(cat ./pid.file);
 #Suppression fichier
 rm pid.file
 rm nohup.out
+
+#HP-Indus-Frontend
+cd ../hp-indus-frontend/
+bash stop.sh
+
 

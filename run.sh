@@ -4,8 +4,8 @@ echo "Les services suivants vont être démarrés :"
 
 echo "* Apache tomcat 9.0.55"
 # echo "* BDD Postgreql"
-echo "* HP-INDUS Bachend"
-# echo "* HP-INDUS Frontend"
+echo "* HP-INDUS-BACKEND"
+echo "* HP-INDUS-FRONTED"
 echo ;
 
 # Récupération de la position actuelle
@@ -25,12 +25,17 @@ echo ;
 ##
 
 #Démarrage applicatif
+#HP-Indus-Backend
 nohup mvn spring-boot:run & echo $! > ./pid.file &
-echo "HP-Indus démarré, il sera dispoible dans quelques instants."
+echo "HP-INDUS-BACKEND démarré, il sera dispoible dans quelques instants."
 
 
 start "" "http://"$ipaddr":8082/apks/last"
 curl $ipaddr+":8082/apks/last"
 echo ;
+
+#HP-Indus-Frontend
+cd ../hp-indus-frontend/
+./run.sh
 
 read
