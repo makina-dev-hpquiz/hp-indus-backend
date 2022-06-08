@@ -1,5 +1,7 @@
 package com.makina.industrialisation.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,12 +22,21 @@ public class ApkController {
 	
 	@GetMapping(value="/lastHPCoreAPK", produces = MediaType.APPLICATION_JSON_VALUE)
     private AndroidPackage getLastHpCoreAPK() {
-		return androidPackagerManager.getAndroidPackageInformation("hp-core");
+		return androidPackagerManager.getHPCoreLatestAPK();
     }
 	
 	@GetMapping(value="/lastHPQuizAPK", produces = MediaType.APPLICATION_JSON_VALUE)
     private AndroidPackage getLastHpQuizAPK() {
-		return androidPackagerManager.getAndroidPackageInformation("hp-quiz");
+		return androidPackagerManager.getHPQuizLatestAPK();
     }
 	
+	@GetMapping(value="/allHPCoreAPK", produces = MediaType.APPLICATION_JSON_VALUE)
+	private List<AndroidPackage> getAllHPCoreAPK(){
+		return androidPackagerManager.getAllHPCoreAPK();	
+	}
+	
+	@GetMapping(value="/allHPQuizAPK", produces = MediaType.APPLICATION_JSON_VALUE)
+	private List<AndroidPackage> getAllHPQuizAPK(){
+		return androidPackagerManager.getAllHPQuizAPK();	
+	}
 }
