@@ -2,6 +2,8 @@ package com.makina.industrialisation.controllers;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,27 +18,34 @@ import com.makina.industrialisation.services.AndroidPackageManager;
 @RestController
 @RequestMapping("apks")
 public class ApkController {
-    	
+
+	Logger logger = LogManager.getLogger(ApkController.class);
+
+	
 	@Autowired
 	private AndroidPackageManager androidPackagerManager;
-	
+
 	@GetMapping(value="/lastHPCoreAPK", produces = MediaType.APPLICATION_JSON_VALUE)
-    private AndroidPackage getLastHpCoreAPK() {
+	private AndroidPackage getLastHpCoreAPK() {
+		logger.debug("Appel de l'API getLastHpCoreAPK");
 		return androidPackagerManager.getHPCoreLatestAPK();
-    }
-	
+	}
+
 	@GetMapping(value="/lastHPQuizAPK", produces = MediaType.APPLICATION_JSON_VALUE)
-    private AndroidPackage getLastHpQuizAPK() {
+	private AndroidPackage getLastHpQuizAPK() {
+		logger.debug("Appel de l'API getLastHpQuizAPK");
 		return androidPackagerManager.getHPQuizLatestAPK();
-    }
-	
+	}
+
 	@GetMapping(value="/allHPCoreAPK", produces = MediaType.APPLICATION_JSON_VALUE)
 	private List<AndroidPackage> getAllHPCoreAPK(){
+		logger.debug("Appel de l'API getAllHPCoreAPK");
 		return androidPackagerManager.getAllHPCoreAPK();	
 	}
-	
+
 	@GetMapping(value="/allHPQuizAPK", produces = MediaType.APPLICATION_JSON_VALUE)
 	private List<AndroidPackage> getAllHPQuizAPK(){
+		logger.debug("Appel de l'API getAllHPQuizAPK");
 		return androidPackagerManager.getAllHPQuizAPK();	
 	}
 }
