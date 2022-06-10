@@ -1,7 +1,5 @@
 package com.makina.industrialisation.models;
 
-import java.util.Date;
-
 public class AndroidPackage {
 	private String name;
 	private String version;

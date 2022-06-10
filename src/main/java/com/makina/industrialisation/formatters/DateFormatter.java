@@ -8,9 +8,9 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DateFormatter extends AbstractFormatter<FileTime> {
+public class DateFormatter implements Formatter<FileTime> {
 
-	private final DateTimeFormatter DATE_FORMATTER =
+	private static final DateTimeFormatter DATE_FORMATTER =
 			DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
 	/**

@@ -8,13 +8,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WebPathFormatter extends AbstractFormatter<String>{
+public class WebPathFormatter implements Formatter<String>{
 
 	Logger logger = LogManager.getLogger(WebPathFormatter.class);
 	
-	private final String HTTP = "http://";
-	private final String TOMCAT_PORT = "8080";
-	private final String APK = "APK";
+	private static final String HTTP = "http://";
+	private static final String TOMCAT_PORT = "8080";
+	private static final String APK = "APK";
 	
 		
 	/** 

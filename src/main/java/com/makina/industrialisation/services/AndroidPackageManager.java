@@ -30,19 +30,19 @@ public class AndroidPackageManager {
 	// TODO A mettre dans l'application.properties
 	private final String ANDROID_PACKAGE_PATH = "C:/bin/apache-tomcat-9.0.55/webapps/APK/";
 
-	private final String LAST_HP_CORE_APK = "hp-core.apk";
-	private final String LAST_HP_QUIZ_APK = "hp-game.apk";
+	private static final String LAST_HP_CORE_APK = "hp-core.apk";
+	private static final String LAST_HP_QUIZ_APK = "hp-game.apk";
 
-	private final String HP_CORE = "hp-core";
-	private final String HP_QUIZ = "hp-quiz";
+	private static final String HP_CORE = "hp-core";
+	private static final String HP_QUIZ = "hp-quiz";
 
 
 	@Autowired
 	private SizeFormatter sizeFormatter;
-	
+
 	@Autowired
 	private WebPathFormatter webPathFormatter;
-	
+
 	@Autowired
 	private DateFormatter dateFormatter;
 
@@ -95,6 +95,7 @@ public class AndroidPackageManager {
 		return apksList;				
 	}
 
+
 	/**
 	 * Récupère les informations AndroidPackage d'un fichier
 	 * @param fileName
@@ -103,7 +104,8 @@ public class AndroidPackageManager {
 	private AndroidPackage getAndroidPackageInformation(String fileName) {
 		AndroidPackage apk = new AndroidPackage();
 		File file = new File(this.ANDROID_PACKAGE_PATH+fileName);
-		logger.debug("Récupération des informations liées au fichier "+file.getAbsolutePath());
+
+		logger.debug("Récupération des informations liées au fichier {0}",file.getAbsolutePath());
 		if(file.exists()) {
 			apk.setName(fileName);
 			apk.setPath(this.webPathFormatter.format(fileName));
@@ -111,14 +113,14 @@ public class AndroidPackageManager {
 			try {
 				FileTime ft = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
 				apk.setBuildDate(this.dateFormatter.format(ft));
-							
+
 				apk.setSize(this.sizeFormatter.format((double) Files.size(file.toPath())));
 			} catch (IOException ex) {
 				logger.error(ex.getMessage());
 			}
 
 		} else {
-			logger.error("Le fichier "+file.getAbsolutePath()+" demandé n'existe pas.");
+			logger.error("Le fichier {0} demandé n'existe pas.", file.getAbsolutePath());
 		}
 
 		return apk;
@@ -144,9 +146,9 @@ public class AndroidPackageManager {
 				}
 			}
 		} else {
-			logger.error("Le dossier "+this.ANDROID_PACKAGE_PATH+" n'existe pas.");
+			logger.error("Le dossier {0} n'existe pas.", this.ANDROID_PACKAGE_PATH);
 		}
-		logger.debug("Nombre d'APK à transmettre : "+filesList.size());
+		logger.debug("Nombre d'APK à transmettre : {0}", filesList.size());
 		return filesList;
 	}
 
