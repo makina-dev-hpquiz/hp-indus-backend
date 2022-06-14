@@ -14,7 +14,7 @@ public class DateFormatter implements Formatter<FileTime> {
 			DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
 	/**
-	 * Formate la date de l'apk 
+	 * Formate la date de l'apk au format String
 	 * @param fileTime
 	 * @return String
 	 */
@@ -24,9 +24,9 @@ public class DateFormatter implements Formatter<FileTime> {
 				.toInstant()
 				.atZone(ZoneId.systemDefault())
 				.toLocalDateTime();
-
 		return localDateTime.format(DATE_FORMATTER);
 	}
+
 }
 
 

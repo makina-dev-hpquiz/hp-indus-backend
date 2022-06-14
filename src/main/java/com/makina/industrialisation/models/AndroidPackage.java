@@ -1,11 +1,16 @@
 package com.makina.industrialisation.models;
 
+import java.nio.file.attribute.FileTime;
+
 public class AndroidPackage {
 	private String name;
 	private String version;
 
 	private String path;
-	private String buildDate;
+	private String buildDateStr;
+	private FileTime buildDate;
+	
+	
 	private String size;
 	
 	public String getName() {
@@ -26,10 +31,16 @@ public class AndroidPackage {
 	public void setPath(String path) {
 		this.path = path;
 	}
-	public String getBuildDate() {
+	public String getBuildDateStr() {
+		return buildDateStr;
+	}
+	public void setBuildDateStr(String buildDateStr) {
+		this.buildDateStr = buildDateStr;
+	}
+	public FileTime getBuildDate() {
 		return buildDate;
 	}
-	public void setBuildDate(String buildDate) {
+	public void setBuildDate(FileTime buildDate) {
 		this.buildDate = buildDate;
 	}
 	public String getSize() {

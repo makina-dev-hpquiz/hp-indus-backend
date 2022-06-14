@@ -1,39 +1,45 @@
 package com.makina.industrialisation.formatters;
 
-import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.makina.industrialisation.configuration.AndroidPackageManagerConfiguration;
 
 @Service
 public class WebPathFormatter implements Formatter<String>{
 
+	@Autowired
+	AndroidPackageManagerConfiguration configuration;
+	
 	Logger logger = LogManager.getLogger(WebPathFormatter.class);
-	
-	private static final String HTTP = "http://";
-	private static final String TOMCAT_PORT = "8080";
-	private static final String APK = "APK";
-	
-		
+			
 	/** 
 	 * Formate le chemin web pour qu'il soit comphréensif par les applications clientes
 	 * @return String
 	 */
 	@Override
 	public String format(String nameAPK) {
-		String webPath = HTTP; 
-
+		StringBuilder sb = new StringBuilder();
+				
+		sb.append(configuration.getProtocol());
 		try {
-			webPath += Inet4Address.getLocalHost().getHostAddress();
+			sb.append(InetAddress.getLocalHost().getHostAddress());
 		} catch (UnknownHostException e) {
 			logger.error(e.getMessage());
 		}
-		webPath += ":"+TOMCAT_PORT;
-		webPath += "/"+APK+"/"+nameAPK;
+		sb.append(":");
+		sb.append(configuration.getPort());
+		sb.append("/");
+		sb.append(configuration.getFolderName());
+		sb.append("/");
+		sb.append(nameAPK);
 
-		return webPath;
+		return sb.toString();
 	}
 
 }

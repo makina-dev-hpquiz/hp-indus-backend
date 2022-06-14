@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.makina.industrialisation.configuration.AndroidPackageManagerConfiguration;
 import com.makina.industrialisation.formatters.DateFormatter;
 import com.makina.industrialisation.formatters.SizeFormatter;
 import com.makina.industrialisation.formatters.WebPathFormatter;
@@ -27,15 +29,9 @@ public class AndroidPackageManager {
 
 	Logger logger = LogManager.getLogger(AndroidPackageManager.class);
 
-	// TODO A mettre dans l'application.properties
-	private final String ANDROID_PACKAGE_PATH = "C:/bin/apache-tomcat-9.0.55/webapps/APK/";
-
-	private static final String LAST_HP_CORE_APK = "hp-core.apk";
-	private static final String LAST_HP_QUIZ_APK = "hp-game.apk";
-
-	private static final String HP_CORE = "hp-core";
-	private static final String HP_QUIZ = "hp-quiz";
-
+	@Autowired
+	AndroidPackageManagerConfiguration configuration;
+	
 
 	@Autowired
 	private SizeFormatter sizeFormatter;
@@ -51,7 +47,7 @@ public class AndroidPackageManager {
 	 * @return List<AndroidPackage>
 	 */
 	public List<AndroidPackage> getAllHPCoreAPK() {
-		return this.getListAndroidPackageInformation(this.getAllAPK(HP_CORE));
+		return this.getListAndroidPackageInformation(this.getAllAPK(this.configuration.getHpCorePartialName()));
 	}
 
 	/**
@@ -59,7 +55,7 @@ public class AndroidPackageManager {
 	 * @return List<AndroidPackage>
 	 */
 	public List<AndroidPackage> getAllHPQuizAPK() {
-		return this.getListAndroidPackageInformation(this.getAllAPK(HP_QUIZ));		
+		return this.getListAndroidPackageInformation(this.getAllAPK(this.configuration.getHpQuizPartialName()));		
 	}
 
 	/**
@@ -67,7 +63,7 @@ public class AndroidPackageManager {
 	 * @return AndroidPackage
 	 */
 	public AndroidPackage getHPCoreLatestAPK() {
-		return this.getAndroidPackageInformation(LAST_HP_CORE_APK);
+		return this.getAndroidPackageInformation(this.configuration.getHpCoreLatest());
 	}
 
 	/**
@@ -75,7 +71,7 @@ public class AndroidPackageManager {
 	 * @return AndroidPackage
 	 */
 	public AndroidPackage getHPQuizLatestAPK() {
-		return this.getAndroidPackageInformation(LAST_HP_QUIZ_APK);		
+		return this.getAndroidPackageInformation(this.configuration.getHpQuizLatest());		
 	}
 
 	/**
@@ -90,9 +86,9 @@ public class AndroidPackageManager {
 		for(File file : filesList) {
 			apksList.add(this.getAndroidPackageInformation(file.getName()));
 		}
-		// TODO Ordonnancement? Plus récent au plus ancien
 
-		return apksList;				
+		return this.sortByDate(apksList);
+				
 	}
 
 
@@ -103,16 +99,18 @@ public class AndroidPackageManager {
 	 */
 	private AndroidPackage getAndroidPackageInformation(String fileName) {
 		AndroidPackage apk = new AndroidPackage();
-		File file = new File(this.ANDROID_PACKAGE_PATH+fileName);
 
-		logger.debug("Récupération des informations liées au fichier {0}",file.getAbsolutePath());
+		File file = new File(this.configuration.getPath()+fileName).getAbsoluteFile();
+
+		logger.debug("Récupération des informations liées au fichier {}",file.getAbsolutePath());
 		if(file.exists()) {
 			apk.setName(fileName);
 			apk.setPath(this.webPathFormatter.format(fileName));
 			//			apk.setVersion(nameApk); TODO
 			try {
 				FileTime ft = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
-				apk.setBuildDate(this.dateFormatter.format(ft));
+				apk.setBuildDate(ft);
+				apk.setBuildDateStr(this.dateFormatter.format(apk.getBuildDate()));
 
 				apk.setSize(this.sizeFormatter.format((double) Files.size(file.toPath())));
 			} catch (IOException ex) {
@@ -120,13 +118,13 @@ public class AndroidPackageManager {
 			}
 
 		} else {
-			logger.error("Le fichier {0} demandé n'existe pas.", file.getAbsolutePath());
+			logger.error("Le fichier {} demandé n'existe pas.", file.getAbsolutePath());
 		}
 
 		return apk;
 	}
 
-
+	
 	/**
 	 * Récupère la liste de fichiers présents dans le répertoire this.ANDROID_PACKAGE_PATH 
 	 * et retourne ceux correspondant au nom de fichier fourni en paramètre
@@ -134,9 +132,14 @@ public class AndroidPackageManager {
 	 * @return List<File>
 	 */
 	private List<File> getAllAPK(String partialFileName) {
-		File folder = new File(this.ANDROID_PACKAGE_PATH);
+		
+		File folder = new File(this.configuration.getPath()).getAbsoluteFile();
+		
 		List<File> filesList = new ArrayList<>();
-
+		
+		logger.debug("Accès au repertoire : {}", folder.getAbsolutePath());
+		
+		
 		if(folder.exists()) {
 			File[] completeFilesList = folder.listFiles();
 
@@ -146,12 +149,22 @@ public class AndroidPackageManager {
 				}
 			}
 		} else {
-			logger.error("Le dossier {0} n'existe pas.", this.ANDROID_PACKAGE_PATH);
+			logger.error("Le dossier {} n'existe pas.", this.configuration.getPath());
 		}
-		logger.debug("Nombre d'APK à transmettre : {0}", filesList.size());
+		logger.debug("Nombre d'APK à transmettre : {}", filesList.size());
 		return filesList;
 	}
 
 
+	private List<AndroidPackage> sortByDate(List<AndroidPackage> androidPackageList) {
+
+		Comparator<AndroidPackage> androidPackageBuilDateComparator
+	      = Comparator.comparing(
+	    		  AndroidPackage::getBuildDate, (s1, s2) -> s2.compareTo(s1)
+	      );
+	    
+		androidPackageList.sort(androidPackageBuilDateComparator);	    
+		return androidPackageList;
+	}
 
 }
