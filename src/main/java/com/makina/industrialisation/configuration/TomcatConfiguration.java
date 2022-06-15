@@ -1,14 +1,13 @@
 package com.makina.industrialisation.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationPropertiesScan 
 @ConfigurationProperties(prefix = "tomcat")
 public class TomcatConfiguration {
 
+	
 	private String port;
 
 	private String protocol;
@@ -25,6 +24,8 @@ public class TomcatConfiguration {
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
+	
+	
 	
 	
 }

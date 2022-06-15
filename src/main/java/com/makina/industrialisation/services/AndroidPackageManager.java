@@ -110,7 +110,7 @@ public class AndroidPackageManager {
 			try {
 				FileTime ft = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
 				apk.setBuildDate(ft);
-				apk.setBuildDateStr(this.dateFormatter.format(apk.getBuildDate()));
+				apk.setBuildDateFormatted(this.dateFormatter.format(apk.getBuildDate()));
 
 				apk.setSize(this.sizeFormatter.format((double) Files.size(file.toPath())));
 			} catch (IOException ex) {

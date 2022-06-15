@@ -2,7 +2,7 @@ package com.makina.industrialisation.formatters;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.junit.jupiter.api.Test;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.makina.industrialisation.configuration.AndroidPackageManagerConfiguration;
+import com.makina.industrialisation.configuration.TomcatConfiguration;
 
 @SpringBootTest
 class WebPathFormatterTests {
@@ -17,25 +18,17 @@ class WebPathFormatterTests {
 	@Autowired
 	WebPathFormatter webPathFormatter;
 	
-
 	@Autowired
 	AndroidPackageManagerConfiguration configuration;
+	
+	@Autowired
+	TomcatConfiguration tomcatConfiguration;
 	
 	@Test
 	void testformat() throws UnknownHostException{
 		String nameApk = "hp-core.apk";
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(configuration.getProtocol());
-		sb.append(Inet4Address.getLocalHost().getHostAddress());
-		sb.append(":");
-		sb.append(configuration.getPort());
-		sb.append("/");
-		sb.append(configuration.getFolderName());
-		sb.append("/");
-		sb.append(nameApk);
-		String expected = sb.toString();
-		
+
+		String expected = "http://"+ InetAddress.getLocalHost().getHostAddress()+":8080/APK/"+nameApk;				
 		String result = this.webPathFormatter.format(nameApk);
 		
 		assertEquals(expected, result);

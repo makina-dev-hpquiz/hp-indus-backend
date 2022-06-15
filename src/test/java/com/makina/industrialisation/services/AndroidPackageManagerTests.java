@@ -72,15 +72,15 @@ class AndroidPackageManagerTests {
 	    AndroidPackage apk3 = new AndroidPackage();
 	    
 	    apk1.setName("Fichier 1.txt");
-	    apk1.setBuildDateStr("07/06/2022 17:00"); 
+	    apk1.setBuildDateFormatted("07/06/2022 17:00"); 
 	    apk1.setBuildDate(FileTime.from(Instant.parse("2022-06-07T17:00:00.00Z")));
  
 	    apk2.setName("Fichier 2.txt");
-	    apk2.setBuildDateStr("10/06/2022 17:14");
+	    apk2.setBuildDateFormatted("10/06/2022 17:14");
 	    apk2.setBuildDate(FileTime.from(Instant.parse("2022-06-10T17:14:00.00Z")));
 
 	    apk3.setName("Fichier 3.txt");
-	    apk3.setBuildDateStr("29/05/2022 17:00");
+	    apk3.setBuildDateFormatted("29/05/2022 17:00");
 	    apk3.setBuildDate(FileTime.from(Instant.parse("2022-05-29T17:00:00.00Z")));
 
 	    apkList.add(apk1);

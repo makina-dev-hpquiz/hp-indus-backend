@@ -2,12 +2,17 @@ package com.makina.industrialisation.models;
 
 import java.nio.file.attribute.FileTime;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class AndroidPackage {
 	private String name;
 	private String version;
 
 	private String path;
-	private String buildDateStr;
+	private String buildDateFormatted;
+	
+	@JsonIgnore
 	private FileTime buildDate;
 	
 	
@@ -31,11 +36,12 @@ public class AndroidPackage {
 	public void setPath(String path) {
 		this.path = path;
 	}
-	public String getBuildDateStr() {
-		return buildDateStr;
+	@JsonGetter("buildDate")
+	public String getBuildDateFormatted() {
+		return buildDateFormatted;
 	}
-	public void setBuildDateStr(String buildDateStr) {
-		this.buildDateStr = buildDateStr;
+	public void setBuildDateFormatted(String buildDateFormatted) {
+		this.buildDateFormatted = buildDateFormatted;
 	}
 	public FileTime getBuildDate() {
 		return buildDate;

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationPropertiesScan 
 @ConfigurationProperties(prefix = "tomcat.apk")
-public class AndroidPackageManagerConfiguration extends TomcatConfiguration{
+public class AndroidPackageManagerConfiguration {
 
 	
 	private String path;
@@ -26,7 +26,9 @@ public class AndroidPackageManagerConfiguration extends TomcatConfiguration{
 	@Value("folder-name")
 	private String folderName;
 	
-	
+	AndroidPackageManagerConfiguration(){
+		super();
+	}
 	
 	public String getPath() {
 		return path;
