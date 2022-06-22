@@ -7,6 +7,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.makina.industrialisation.configuration.AndroidPackageManagerConfiguration;
+import com.makina.industrialisation.filters.DateFilter;
+import com.makina.industrialisation.filters.NameFilter;
 import com.makina.industrialisation.formatters.DateFormatter;
 import com.makina.industrialisation.formatters.SizeFormatter;
 import com.makina.industrialisation.formatters.WebPathFormatter;
@@ -31,7 +34,7 @@ public class AndroidPackageManager {
 
 	@Autowired
 	AndroidPackageManagerConfiguration configuration;
-	
+	private String latest = "latest";
 
 	@Autowired
 	private SizeFormatter sizeFormatter;
@@ -86,9 +89,8 @@ public class AndroidPackageManager {
 		for(File file : filesList) {
 			apksList.add(this.getAndroidPackageInformation(file.getName()));
 		}
-
-		return this.sortByDate(apksList);
-				
+		this.sortByDate(apksList);
+		return this.deleteDoublon(apksList);
 	}
 
 
@@ -106,12 +108,11 @@ public class AndroidPackageManager {
 		if(file.exists()) {
 			apk.setName(fileName);
 			apk.setPath(this.webPathFormatter.format(fileName));
-			//			apk.setVersion(nameApk); TODO
+			
+			this.extractDate(apk, file);
+			apk.setVersion(this.extractVersion(apk)); 
+			
 			try {
-				FileTime ft = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
-				apk.setBuildDate(ft);
-				apk.setBuildDateFormatted(this.dateFormatter.format(apk.getBuildDate()));
-
 				apk.setSize(this.sizeFormatter.format((double) Files.size(file.toPath())));
 			} catch (IOException ex) {
 				logger.error(ex.getMessage());
@@ -167,4 +168,92 @@ public class AndroidPackageManager {
 		return androidPackageList;
 	}
 
+	/**
+	 * Retire de la liste un l'item en doublon ayant la valeur '' dans le nom du fichier
+	 * @param androidPackageList
+	 * @return androidPackageList
+	 */
+	private List<AndroidPackage> deleteDoublon(List<AndroidPackage> androidPackageList) {
+		try {
+			AndroidPackage toDelete = androidPackageList.stream().filter(apk -> apk.getName().contains(latest)).collect(Collectors.toList()).get(0);
+			androidPackageList.remove(toDelete);
+		} catch(Exception e) {
+			logger.error("Impossible de trouver et de supprimer l'élément doublon : {}", e.getMessage());
+		}
+		
+		return androidPackageList;
+	}
+
+	/**
+	 * Extrait la version en manipulant des APK
+	 * @param AndroidPackage apk
+	 * @return String
+	 */
+	private String extractVersion(AndroidPackage apk) {
+		if(apk.getName().contains(latest)) {
+			// Détermine le nom de l'application
+			String partialName = "";
+			if(apk.getName().contains(this.configuration.getHpCorePartialName())) {
+				partialName = this.configuration.getHpCorePartialName();
+			} else if(apk.getName().contains(this.configuration.getHpQuizPartialName())) {
+				partialName = this.configuration.getHpQuizPartialName();
+			} else {
+				logger.error("Impossible d'identifié le nom de l'APK : {}", apk.getName());
+			}
+			
+			//Récupère les fichiers reliés à l'application déterminé plus tot
+			List<AndroidPackage> apkList = new ArrayList<>();
+			for(File f : this.getAllAPK(partialName)) {
+				AndroidPackage nApk = new AndroidPackage();
+				nApk.setName(f.getName());
+				this.extractDate(nApk, f);
+				apkList.add(nApk);
+			}
+			
+			// Récupére une APK ayant la même date et n'ayant pas le mot clef latest que l'APK dont on cherche la version
+			AndroidPackage apkToFilter = apk;
+			try {
+				AndroidPackage apkFiltered = apkList.stream().filter(
+						a -> !NameFilter.isLatestVersion(a.getName()) &&
+						DateFilter.isApproximateDate(apkToFilter.getBuildDate(), a.getBuildDate())).collect(Collectors.toList()).get(0); 
+		
+				return this.extractVersion(apkFiltered.getName());
+			} catch (Exception e) {
+				logger.error("Erreur lors de l'extraction de la version : {}" , e.getMessage());
+			}
+		
+		} else {
+			return this.extractVersion(apk.getName());
+		}
+
+		return "";
+	}
+	
+	/**
+	 * Extrait la version en manipulant une String
+	 * @param String apkName
+	 * @return String
+	 */
+	private String extractVersion(String apkName) {
+		if(!apkName.contains(latest) && apkName.matches("(.*)[0-9](.*)")) {
+			return apkName.substring(apkName.lastIndexOf("-")+1, apkName.indexOf(".apk"));
+		} else {
+			logger.error("Impossible de déterminer la valeur de la version {}", apkName);
+			return "";
+		}
+	}
+
+	private AndroidPackage extractDate(AndroidPackage apk, File f) {
+		try {
+			FileTime ft = (FileTime) Files.getAttribute(f.toPath(), "creationTime");
+			apk.setBuildDate(ft);
+			apk.setBuildDateFormatted(this.dateFormatter.format(apk.getBuildDate()));
+		} catch (IOException ex) {
+			logger.error(ex.getMessage());
+		}
+
+		return apk;
+	}
+
 }
+

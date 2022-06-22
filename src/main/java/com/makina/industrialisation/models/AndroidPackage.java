@@ -55,5 +55,4 @@ public class AndroidPackage {
 	public void setSize(String string) {
 		this.size = string;
 	}
-
 }

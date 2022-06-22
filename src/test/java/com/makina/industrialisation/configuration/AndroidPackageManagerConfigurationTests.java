@@ -22,7 +22,7 @@ class AndroidPackageManagerConfigurationTests {
 	@Test
 	void testGetHpCoreLatest(){
 		String result = configuration.getHpCoreLatest();
-		assertEquals("Fichier 1.txt", result);
+		assertEquals("test-hp-core-latest.apk", result);
 		
 	}
 }
