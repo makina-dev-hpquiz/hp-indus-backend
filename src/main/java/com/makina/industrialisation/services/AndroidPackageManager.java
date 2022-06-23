@@ -34,6 +34,7 @@ public class AndroidPackageManager {
 
 	@Autowired
 	AndroidPackageManagerConfiguration configuration;
+	
 	private String latest = "latest";
 
 	@Autowired
@@ -49,7 +50,7 @@ public class AndroidPackageManager {
 	 * Récupère la liste AndroidPackage pour l'APK Hp-Core
 	 * @return List<AndroidPackage>
 	 */
-	public List<AndroidPackage> getAllHPCoreAPK() {
+	public List<AndroidPackage> getAllHPCore() {
 		return this.getListAndroidPackageInformation(this.getAllAPK(this.configuration.getHpCorePartialName()));
 	}
 
@@ -57,7 +58,7 @@ public class AndroidPackageManager {
 	 * Récupère la liste AndroidPackage pour l'APK Hp-Quiz
 	 * @return List<AndroidPackage>
 	 */
-	public List<AndroidPackage> getAllHPQuizAPK() {
+	public List<AndroidPackage> getAllHPQuiz() {
 		return this.getListAndroidPackageInformation(this.getAllAPK(this.configuration.getHpQuizPartialName()));		
 	}
 
@@ -65,7 +66,7 @@ public class AndroidPackageManager {
 	 * Récupère les informations du dernier HP-Core APK
 	 * @return AndroidPackage
 	 */
-	public AndroidPackage getHPCoreLatestAPK() {
+	public AndroidPackage getHPCoreLatest() {
 		return this.getAndroidPackageInformation(this.configuration.getHpCoreLatest());
 	}
 
@@ -73,7 +74,7 @@ public class AndroidPackageManager {
 	 * Récupère les informations du dernier HP-Quiz APK
 	 * @return AndroidPackage
 	 */
-	public AndroidPackage getHPQuizLatestAPK() {
+	public AndroidPackage getHPQuizLatest() {
 		return this.getAndroidPackageInformation(this.configuration.getHpQuizLatest());		
 	}
 

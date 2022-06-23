@@ -26,26 +26,26 @@ public class ApkController {
 	private AndroidPackageManager androidPackagerManager;
 
 	@GetMapping(value="/hp-core/latest", produces = MediaType.APPLICATION_JSON_VALUE)
-	public AndroidPackage getLastHpCoreAPK() {
+	public AndroidPackage getHpCoreLatest() {
 		logger.debug("Appel de l'API getLastHpCoreAPK");
-		return androidPackagerManager.getHPCoreLatestAPK();
+		return androidPackagerManager.getHPCoreLatest();
 	}
 
 	@GetMapping(value="/hp-quiz/latest", produces = MediaType.APPLICATION_JSON_VALUE)
-	public AndroidPackage getLastHpQuizAPK() {
+	public AndroidPackage getHpQuizLatest() {
 		logger.debug("Appel de l'API getLastHpQuizAPK");
-		return androidPackagerManager.getHPQuizLatestAPK();
+		return androidPackagerManager.getHPQuizLatest();
 	}
 
 	@GetMapping(value="/hp-core", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<AndroidPackage> getAllHPCoreAPK(){
+	public List<AndroidPackage> getAllHPCore(){
 		logger.debug("Appel de l'API getAllHPCoreAPK");
-		return androidPackagerManager.getAllHPCoreAPK();	
+		return androidPackagerManager.getAllHPCore();	
 	}
 
 	@GetMapping(value="/hp-quiz", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<AndroidPackage> getAllHPQuizAPK(){
+	public List<AndroidPackage> getAllHPQuiz(){
 		logger.debug("Appel de l'API getAllHPQuizAPK");
-		return androidPackagerManager.getAllHPQuizAPK();	
+		return androidPackagerManager.getAllHPQuiz();	
 	}
 }
