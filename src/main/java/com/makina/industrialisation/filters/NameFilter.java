@@ -6,14 +6,14 @@ public class NameFilter {
 	private NameFilter() {
 	    throw new IllegalStateException("NameFilter Utility class");
 	}
-
 	
 	/**
-	 * Indique si la chaîne correspondant transmis possède l'indication latest 
+	 * Indique si la première occurence fourni possède la seconde occurence.
 	 * @param String name
-	 * @return String
+	 * @param String partialName
+	 * @return boolean
 	 */
-	public static boolean isLatestVersion(String name) {
-		return name.contains("latest");
+	public static boolean hasPartialName(String name, String partialName) {
+		return name.contains(partialName);
 	}
 }

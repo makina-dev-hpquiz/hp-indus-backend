@@ -1,8 +1,6 @@
 package com.makina.industrialisation.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
@@ -131,77 +129,5 @@ class AndroidPackageManagerTests {
 		    
 	}
 
-	@Test
-	void testExtractVersionWithAPK() {
-
-	    AndroidPackage apk1 = new AndroidPackage();
-	    apk1.setName("test-hp-core-1.0.1.apk");
-	    apk1.setBuildDateFormatted("07/06/2022 17:00"); 
-	    apk1.setBuildDate(FileTime.from(Instant.parse("2022-06-07T17:00:00.00Z")));
-	    
-
-	    AndroidPackage apk2 = new AndroidPackage();
-	    apk2.setName("test-hp-core-latest.apk");
-	    apk2.setBuildDateFormatted("10/06/2022 13:00"); 
-	    apk2.setBuildDate(FileTime.from(Instant.parse("2022-06-10T13:00:00.00Z")));
-	    
-
-	    AndroidPackage apk3 = new AndroidPackage();
-	    apk3.setName("test-hp-core-latest.apk");
-	    apk3.setBuildDateFormatted("10/06/2022 13:01"); 
-	    apk3.setBuildDate(FileTime.from(Instant.parse("2022-06-10T13:01:00.00Z")));
-	    
-
-	    AndroidPackage apk4 = new AndroidPackage();
-	    apk4.setName("test-hp-core-latest.apk");
-	    apk4.setBuildDateFormatted("10/06/2022 13:02"); 
-	    apk4.setBuildDate(FileTime.from(Instant.parse("2022-06-10T13:02:00.00Z")));
-	    
-
-	    AndroidPackage apk5 = new AndroidPackage();
-	    apk5.setName("test-hp-core-latest.apk");
-	    apk5.setBuildDateFormatted("10/06/2022 13:03"); 
-	    apk5.setBuildDate(FileTime.from(Instant.parse("2022-06-10T13:03:00.00Z")));
-	    
-	    AndroidPackage apk6 = new AndroidPackage();
-	    apk6.setName("test-hp-core-latest.apk");
-	    apk6.setBuildDateFormatted("10/06/2022 13:10"); 
-	    apk6.setBuildDate(FileTime.from(Instant.parse("2022-06-10T13:10:00.00Z")));
-	    
-		String version1 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", apk1);
-		String version2 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", apk2);
-		String version3 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", apk3);
-		String version4 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", apk4);
-		String version5 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", apk5);
-		String version6 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", apk6);
-	
-		assertEquals("1.0.1", version1);
-		assertEquals("1.0.2", version2);
-		assertEquals("1.0.2", version3);
-		assertEquals("1.0.2", version4);
-		assertNotEquals("1.0.2", version5);
-		assertNotEquals("1.0.2", version6);
-	}
-	
-	@Test
-	void testExtractVersionWithString() {
 		
-		String nameApk1 = "hp-core-1.0.1.apk";
-		String nameApk2 = "hp-core-1.0.2.apk";
-		String nameApk3 = "hp-core-latest.apk";
-		String nameApk4 = "hp-core.apk";
-		
-		String version1 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", nameApk1);
-		String version2 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", nameApk2);
-		String version3 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", nameApk3);
-		String version4 = ReflectionTestUtils.invokeMethod(androidPackageManager, "extractVersion", nameApk4);
-
-		
-
-		assertEquals("1.0.1", version1);
-		assertEquals("1.0.2", version2);
-		assertEquals("", version3);
-		assertEquals("", version4);
-	}
-	
 }

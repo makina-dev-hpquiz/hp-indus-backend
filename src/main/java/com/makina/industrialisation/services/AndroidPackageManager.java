@@ -3,7 +3,6 @@ package com.makina.industrialisation.services;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -15,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.makina.industrialisation.configuration.AndroidPackageManagerConfiguration;
-import com.makina.industrialisation.filters.DateFilter;
+import com.makina.industrialisation.extractors.DateExtractor;
+import com.makina.industrialisation.extractors.VersionExtractor;
 import com.makina.industrialisation.filters.NameFilter;
 import com.makina.industrialisation.formatters.DateFormatter;
 import com.makina.industrialisation.formatters.SizeFormatter;
@@ -35,17 +35,22 @@ public class AndroidPackageManager {
 	@Autowired
 	AndroidPackageManagerConfiguration configuration;
 	
-	private String latest = "latest";
-
 	@Autowired
 	private SizeFormatter sizeFormatter;
 
 	@Autowired
 	private WebPathFormatter webPathFormatter;
-
+	
 	@Autowired
 	private DateFormatter dateFormatter;
 
+	@Autowired
+	private DateExtractor dateExtractor;
+	
+	@Autowired
+	private VersionExtractor versionExtractor;
+	
+	
 	/**
 	 * Récupère la liste AndroidPackage pour l'APK Hp-Core
 	 * @return List<AndroidPackage>
@@ -108,10 +113,23 @@ public class AndroidPackageManager {
 		logger.debug("Récupération des informations liées au fichier {}",file.getAbsolutePath());
 		if(file.exists()) {
 			apk.setName(fileName);
-			apk.setPath(this.webPathFormatter.format(fileName));
-			
-			this.extractDate(apk, file);
-			apk.setVersion(this.extractVersion(apk)); 
+			apk.setPath(this.webPathFormatter.format(fileName));			
+			apk.setBuildDate(dateExtractor.extract(file));
+			apk.setBuildDateFormatted(this.dateFormatter.format(apk.getBuildDate()));
+			//Prepare extract version
+			if(apk.isLatest()) {
+				String partialName = NameFilter.hasPartialName(apk.getName(), this.configuration.getHpCorePartialName()) ?  this.configuration.getHpCorePartialName() :  this.configuration.getHpQuizPartialName();
+				List<AndroidPackage> apkList = new ArrayList<>();
+				for(File f : this.getAllAPK(partialName)) {
+					AndroidPackage nApk = new AndroidPackage();
+					nApk.setName(f.getName());
+					nApk.setBuildDate(dateExtractor.extract(f));
+					apkList.add(nApk);
+				}
+			apk.setVersion(this.versionExtractor.extract(apk, apkList)); 
+			} else {
+				apk.setVersion(this.versionExtractor.extract(apk)); 
+			}
 			
 			try {
 				apk.setSize(this.sizeFormatter.format((double) Files.size(file.toPath())));
@@ -158,6 +176,12 @@ public class AndroidPackageManager {
 	}
 
 
+	/**
+	 * Tri la liste du plus récent au plus ancien
+	 * 
+	 * @param List<AndroidPackage> androidPackageList
+	 * @return List<AndroidPackage>
+	 */
 	private List<AndroidPackage> sortByDate(List<AndroidPackage> androidPackageList) {
 
 		Comparator<AndroidPackage> androidPackageBuilDateComparator
@@ -176,84 +200,13 @@ public class AndroidPackageManager {
 	 */
 	private List<AndroidPackage> deleteDoublon(List<AndroidPackage> androidPackageList) {
 		try {
-			AndroidPackage toDelete = androidPackageList.stream().filter(apk -> apk.getName().contains(latest)).collect(Collectors.toList()).get(0);
+			AndroidPackage toDelete = androidPackageList.stream().filter(AndroidPackage::isLatest).collect(Collectors.toList()).get(0);
 			androidPackageList.remove(toDelete);
 		} catch(Exception e) {
 			logger.error("Impossible de trouver et de supprimer l'élément doublon : {}", e.getMessage());
 		}
 		
 		return androidPackageList;
-	}
-
-	/**
-	 * Extrait la version en manipulant des APK
-	 * @param AndroidPackage apk
-	 * @return String
-	 */
-	private String extractVersion(AndroidPackage apk) {
-		if(apk.getName().contains(latest)) {
-			// Détermine le nom de l'application
-			String partialName = "";
-			if(apk.getName().contains(this.configuration.getHpCorePartialName())) {
-				partialName = this.configuration.getHpCorePartialName();
-			} else if(apk.getName().contains(this.configuration.getHpQuizPartialName())) {
-				partialName = this.configuration.getHpQuizPartialName();
-			} else {
-				logger.error("Impossible d'identifié le nom de l'APK : {}", apk.getName());
-			}
-			
-			//Récupère les fichiers reliés à l'application déterminé plus tot
-			List<AndroidPackage> apkList = new ArrayList<>();
-			for(File f : this.getAllAPK(partialName)) {
-				AndroidPackage nApk = new AndroidPackage();
-				nApk.setName(f.getName());
-				this.extractDate(nApk, f);
-				apkList.add(nApk);
-			}
-			
-			// Récupére une APK ayant la même date et n'ayant pas le mot clef latest que l'APK dont on cherche la version
-			AndroidPackage apkToFilter = apk;
-			try {
-				AndroidPackage apkFiltered = apkList.stream().filter(
-						a -> !NameFilter.isLatestVersion(a.getName()) &&
-						DateFilter.isApproximateDate(apkToFilter.getBuildDate(), a.getBuildDate())).collect(Collectors.toList()).get(0); 
-		
-				return this.extractVersion(apkFiltered.getName());
-			} catch (Exception e) {
-				logger.error("Erreur lors de l'extraction de la version : {}" , e.getMessage());
-			}
-		
-		} else {
-			return this.extractVersion(apk.getName());
-		}
-
-		return "";
-	}
-	
-	/**
-	 * Extrait la version en manipulant une String
-	 * @param String apkName
-	 * @return String
-	 */
-	private String extractVersion(String apkName) {
-		if(!apkName.contains(latest) && apkName.matches("(.*)[0-9](.*)")) {
-			return apkName.substring(apkName.lastIndexOf("-")+1, apkName.indexOf(".apk"));
-		} else {
-			logger.error("Impossible de déterminer la valeur de la version {}", apkName);
-			return "";
-		}
-	}
-
-	private AndroidPackage extractDate(AndroidPackage apk, File f) {
-		try {
-			FileTime ft = (FileTime) Files.getAttribute(f.toPath(), "creationTime");
-			apk.setBuildDate(ft);
-			apk.setBuildDateFormatted(this.dateFormatter.format(apk.getBuildDate()));
-		} catch (IOException ex) {
-			logger.error(ex.getMessage());
-		}
-
-		return apk;
 	}
 
 }

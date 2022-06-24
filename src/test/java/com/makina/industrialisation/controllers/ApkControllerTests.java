@@ -19,9 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.makina.industrialisation.models.AndroidPackage;
 
-//@SpringBootTest
 @ActiveProfiles("test")
-//@AutoConfigureMockMvc
 @WebMvcTest(ApkController.class)
 class ApkControllerTests {
 	
@@ -128,26 +126,4 @@ class ApkControllerTests {
 	    .andExpect(content().string(objectMapper.writeValueAsString(expected).toString()));
 	}
 	 
-	 
-	 
-	
-//	@Test
-//	void testGetLastHpCoreAPK(){
-//		
-//		AndroidPackage expected = new AndroidPackage();
-//		expected.setName("test-hp-quiz-latest.apk");
-//		expected.setVersion("");
-//		expected.setPath("http://192.168.43.20:8080/APK/test-hp-quiz-latest.apk");
-//		expected.setSize("0 o");
-//		expected.setBuildDateFormatted("10/06/2022 17:14");
-//		
-//		AndroidPackage result = apkController.getLastHpQuizAPK();
-//		
-//		assertEquals(expected.getName(), result.getName());
-//		assertEquals(expected.getVersion(), result.getVersion());
-//		assertEquals(expected.getPath(), result.getPath());
-//		assertEquals(expected.getSize(), result.getSize());
-//		assertEquals(expected.getBuildDateFormatted(), result.getBuildDateFormatted());
-//	}
-
 }

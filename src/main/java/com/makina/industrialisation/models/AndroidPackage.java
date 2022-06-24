@@ -55,4 +55,12 @@ public class AndroidPackage {
 	public void setSize(String string) {
 		this.size = string;
 	}
+	
+	/**
+	 * Indique si le nom de l'apk contient le mot clef latest
+	 * @return boolean
+	 */
+	public boolean isLatest() {
+		return getName().contains("latest");
+	}
 }
