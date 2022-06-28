@@ -1,8 +1,5 @@
 package com.makina.industrialisation.services;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.makina.industrialisation.models.Incident;
 import com.makina.industrialisation.repositories.IncidentRepository;
+import com.makina.industrialisation.utils.FileManager;
 
 @Service
 public class IncidentService {
@@ -44,6 +42,15 @@ public class IncidentService {
 	 * @param UUID id
 	 * @return INCIDENT
 	 */
+	public Incident findById(UUID id) {
+		return this.findById(id.toString());
+	}
+	
+	/**
+	 * Retourne un incident dont l'UUID au format string est passé en paramètre
+	 * @param String id
+	 * @return INCIDENT
+	 */
 	public Incident findById(String id) {
 		try{
 		    Optional<Incident> incident = this.incidentRepository.findById(UUID.fromString(id));
@@ -68,13 +75,8 @@ public class IncidentService {
 	public void deleteIncidentById(String id) {
 		Incident incident = this.findById(id);
 		if(incident != null) {
-			// TODO Implementation remove image
 			if(incident.getScreenshotPath() != null) {
-				try {
-					Files.delete(Path.of(incident.getScreenshotPath()));
-				} catch (IOException e) {
-					logger.error("Erreur lors de la suppression de l\'image {} associé à l'incident {}, {}", incident.getScreenshotPath(), incident.getId(), e.getMessage());
-				}
+				FileManager.deleteFile(incident.getScreenshotPath());
 			}
 			this.incidentRepository.delete(this.findById(id));
 		}

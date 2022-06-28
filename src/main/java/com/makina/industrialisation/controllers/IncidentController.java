@@ -1,7 +1,5 @@
 package com.makina.industrialisation.controllers;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,14 +15,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.makina.industrialisation.configuration.TomcatConfiguration;
 import com.makina.industrialisation.models.Incident;
-import com.makina.industrialisation.services.BugsManager;
 import com.makina.industrialisation.services.IncidentService;
+import com.makina.industrialisation.utils.FileManager;
 
 @CrossOrigin
 @RestController
@@ -35,43 +35,46 @@ public class IncidentController {
 	Logger logger = LogManager.getLogger(IncidentController.class);
 	
 	@Autowired
-	private BugsManager bugsManager;
-	@Autowired
 	private IncidentService incidentService;
 	
-//	private final String PATH  = "C:\\Users\\Utilisateur\\Documents\\workspace\\dev_mobile\\images\\";
-	private final String PATH  = "C:\\apache-tomcat-9.0.55\\webapps\\images\\";
+	@Autowired 
+	TomcatConfiguration tomcatConfiguration;
+	
 	private final String WEB_PATH = "http:\\\\192.168.1.11:8080\\images\\";
 	
-	
-	//private void UploadBugsScreen(@ModelAttribute MultipartFile file, ModelMap modelMap) {}
-	@PostMapping(value="/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String UploadBugsScreen(@ModelAttribute("incident") Incident incident, @RequestParam(value = "screenshot", required = false) MultipartFile screenshot,
+	@PutMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Incident updateIncident(@ModelAttribute("incident") Incident incident, @RequestParam(value = "screenshot", required = false) MultipartFile screenshot,
 			ModelMap modelMap) {
-		System.out.println("UPLOAD EN COURS");
+		
+		Incident oldIncident = incidentService.findById(incident.getId());
 
-		if(screenshot != null) {
-			try {
-				screenshot.transferTo(new File(PATH+screenshot.getOriginalFilename()));
-				
-				System.out.println(PATH+screenshot.getOriginalFilename());
-				incident.setScreenshotPath(PATH+screenshot.getOriginalFilename());
-				incident.setScreenshotWebPath(WEB_PATH+screenshot.getOriginalFilename());
-
-			} catch (IllegalStateException e) {
-				System.out.print("IllegalStateException");
-				e.printStackTrace(); //TODO
-			} catch (IOException e) {
-				System.out.print("IOException");
-				e.printStackTrace(); //TODO
-			}
+		if(screenshot.getOriginalFilename()!= null && !screenshot.getOriginalFilename().equals(FileManager.getName(oldIncident.getScreenshotPath()))) {
+			FileManager.deleteFile(oldIncident.getScreenshotPath());
+			oldIncident.setScreenshotPath("");
+			oldIncident.setScreenshotWebPath("");
+			savePicture(screenshot, incident);
 		}
 		
-		incidentService.saveIncident(incident);
-		bugsManager.incidents.add(incident);
-
-		System.out.print("UPLOAD OK");
-		return "OK!";
+		return incidentService.saveIncident(incident);
+		
+	}
+	
+	@PostMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Incident saveIncident(@ModelAttribute("incident") Incident incident, @RequestParam(value = "screenshot", required = false) MultipartFile screenshot,
+			ModelMap modelMap) {
+		logger.debug("Appel de l'API saveIncident");
+				
+		savePicture(screenshot, incident);
+		return incidentService.saveIncident(incident);
+	}
+	
+	
+	private void savePicture(MultipartFile screenshot, Incident incident) {
+		if(screenshot != null) {
+			FileManager.saveFile(screenshot,  tomcatConfiguration.getImgPath());
+			incident.setScreenshotPath( tomcatConfiguration.getImgPath()+screenshot.getOriginalFilename());
+			incident.setScreenshotWebPath(WEB_PATH+screenshot.getOriginalFilename()); //TODO ReUseWebPathFormatter
+		}
 	}
 	
 	@GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
