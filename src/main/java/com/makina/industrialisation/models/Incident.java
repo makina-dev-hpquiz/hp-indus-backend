@@ -4,12 +4,11 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 
 
 @Entity
-public class Incident {
+public class Incident extends Object{
 
 	@Id
 	private UUID id;
@@ -24,7 +23,7 @@ public class Incident {
 	public Incident() {
 		this.id = UUID.randomUUID();
 	}
-	
+		
 	public Incident(String title, String description, String screenshotPath,
 			 String screenshotWebPath, String priority, String date, String type){
 		

@@ -26,11 +26,11 @@ class ApkControllerTests {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	 @Autowired
-	  private ObjectMapper objectMapper;
+	@Autowired
+	private ObjectMapper objectMapper;
 	 
-	 @MockBean
-	 private ApkController apkController;
+	@MockBean
+	private ApkController apkController;
 		
 		@Test
 		void getHPCoreTest() throws JsonProcessingException, Exception {

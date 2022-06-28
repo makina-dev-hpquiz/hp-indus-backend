@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,9 +28,12 @@ import com.makina.industrialisation.services.IncidentService;
 
 @CrossOrigin
 @RestController
-@RequestMapping("bugs")
+@RequestMapping("incidents")
 public class IncidentController {
 
+
+	Logger logger = LogManager.getLogger(IncidentController.class);
+	
 	@Autowired
 	private BugsManager bugsManager;
 	@Autowired
@@ -39,7 +46,7 @@ public class IncidentController {
 	
 	//private void UploadBugsScreen(@ModelAttribute MultipartFile file, ModelMap modelMap) {}
 	@PostMapping(value="/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-	private String UploadBugsScreen(@ModelAttribute("incident") Incident incident, @RequestParam(value = "screenshot", required = false) MultipartFile screenshot,
+	public String UploadBugsScreen(@ModelAttribute("incident") Incident incident, @RequestParam(value = "screenshot", required = false) MultipartFile screenshot,
 			ModelMap modelMap) {
 		System.out.println("UPLOAD EN COURS");
 
@@ -68,23 +75,23 @@ public class IncidentController {
 	}
 	
 	@GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-	private List<Incident> getIncidents() {
-		
-		List<Incident> incidents = incidentService.findAllIncident();
-		System.out.println("Nombre d'Incidents :"+incidents.size());
-
-		return incidents;
+	public List<Incident> getIncidents() {
+		logger.debug("Appel de l'API getIncidents");
+		return incidentService.findAll();
 	}
 	
 
 	@GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	private Incident getIncident(@PathVariable("id") String id) {
-		return incidentService.findIncidentById(id);
+	public ResponseEntity<Incident> getIncident(@PathVariable("id") String id) {
+		logger.debug("Appel de l'API getIncident : {}", id);
+		Incident incident = incidentService.findById(id);
+		
+		return new ResponseEntity<>(incident, incident != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);		
 	}
 	
 
 	@DeleteMapping(value="/delete/{id}")
-	private void deleteIncident(@PathVariable("id") String id) {
+	public void deleteIncident(@PathVariable("id") String id) {
 		incidentService.deleteIncidentById(id);
 	}
 
