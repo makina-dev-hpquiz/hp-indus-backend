@@ -17,9 +17,9 @@ import com.makina.industrialisation.configuration.AndroidPackageManagerConfigura
 import com.makina.industrialisation.extractors.DateExtractor;
 import com.makina.industrialisation.extractors.VersionExtractor;
 import com.makina.industrialisation.filters.NameFilter;
+import com.makina.industrialisation.formatters.ApkWebPathFormatter;
 import com.makina.industrialisation.formatters.DateFormatter;
 import com.makina.industrialisation.formatters.SizeFormatter;
-import com.makina.industrialisation.formatters.WebPathFormatter;
 import com.makina.industrialisation.models.AndroidPackage;
 
 /**
@@ -39,7 +39,7 @@ public class AndroidPackageManager {
 	private SizeFormatter sizeFormatter;
 
 	@Autowired
-	private WebPathFormatter webPathFormatter;
+	private ApkWebPathFormatter webPathFormatter;
 	
 	@Autowired
 	private DateFormatter dateFormatter;

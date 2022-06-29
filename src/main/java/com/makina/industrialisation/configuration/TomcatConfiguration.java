@@ -16,6 +16,9 @@ public class TomcatConfiguration {
 	@Value("img-path")
 	private String imgPath;
 	
+	@Value("img-folder")
+	private String imgFolder;
+	
 	public String getPort() {
 		return port;
 	}
@@ -33,6 +36,12 @@ public class TomcatConfiguration {
 	}
 	public void setImgPath(String imgPath) {
 		this.imgPath = imgPath;
+	}
+	public String getImgFolder() {
+		return imgFolder;
+	}
+	public void setImgFolder(String imgFolder) {
+		this.imgFolder = imgFolder;
 	}
 	
 	

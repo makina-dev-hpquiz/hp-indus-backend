@@ -8,29 +8,29 @@ import java.net.UnknownHostException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.makina.industrialisation.configuration.AndroidPackageManagerConfiguration;
-import com.makina.industrialisation.configuration.TomcatConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest
-class WebPathFormatterTests {
+class ApkWebPathFormatterTests {
 
 	@Autowired
-	WebPathFormatter webPathFormatter;
-	
-	@Autowired
-	AndroidPackageManagerConfiguration configuration;
-	
-	@Autowired
-	TomcatConfiguration tomcatConfiguration;
-	
+	ApkWebPathFormatter webPathFormatter;
+		
 	@Test
 	void testformat() throws UnknownHostException{
+		
+		
 		String nameApk = "hp-core.apk";
 
 		String expected = "http://"+ InetAddress.getLocalHost().getHostAddress()+":8080/APK/"+nameApk;				
 		String result = this.webPathFormatter.format(nameApk);
 		
 		assertEquals(expected, result);
+	}
+	
+	@Test
+	void testGetFolderName() {
+		String folderName = ReflectionTestUtils.invokeMethod(webPathFormatter, "getFolderName");
+		assertEquals("APK", folderName);
 	}
 }

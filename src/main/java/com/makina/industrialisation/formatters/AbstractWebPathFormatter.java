@@ -8,26 +8,22 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.makina.industrialisation.configuration.AndroidPackageManagerConfiguration;
 import com.makina.industrialisation.configuration.TomcatConfiguration;
 
 @Service
-public class WebPathFormatter implements Formatter<String>{
-
-	@Autowired
-	AndroidPackageManagerConfiguration configuration;
+public abstract class AbstractWebPathFormatter implements Formatter<String>{
 	
 	@Autowired
 	TomcatConfiguration tomcatConfiguration;
 	
-	Logger logger = LogManager.getLogger(WebPathFormatter.class);
+	Logger logger = LogManager.getLogger(AbstractWebPathFormatter.class);
 			
 	/** 
 	 * Formate le chemin web pour qu'il soit comphréensif par les applications clientes
 	 * @return String
 	 */
 	@Override
-	public String format(String nameAPK) {
+	public String format(String nameFile) {
 		StringBuilder sb = new StringBuilder();
 				
 		sb.append(tomcatConfiguration.getProtocol());
@@ -39,11 +35,16 @@ public class WebPathFormatter implements Formatter<String>{
 		sb.append(":");
 		sb.append(tomcatConfiguration.getPort());
 		sb.append("/");
-		sb.append(configuration.getFolderName());
+		sb.append(this.getFolderName());
 		sb.append("/");
-		sb.append(nameAPK);
+		sb.append(nameFile);
 
 		return sb.toString();
 	}
 
+	/**
+	 * Retourne le nom du dossier nécessaire à la fonction Format()
+	 * @return String
+	 */
+	protected abstract String getFolderName();
 }

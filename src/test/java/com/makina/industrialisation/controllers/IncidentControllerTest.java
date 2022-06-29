@@ -1,6 +1,9 @@
 package com.makina.industrialisation.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -14,17 +17,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.makina.industrialisation.configuration.TomcatConfiguration;
 import com.makina.industrialisation.models.Incident;
 
 @ActiveProfiles("test")
 @WebMvcTest(IncidentController.class)
+@Import(TomcatConfiguration.class)
 public class IncidentControllerTest {
 
 	@Autowired
@@ -35,7 +44,9 @@ public class IncidentControllerTest {
 	 
 	@MockBean
 	private IncidentController incidentController;
-	
+		
+	 @Autowired
+	 private TomcatConfiguration tomcatConfiguration;
 	
 	private static Incident i1;
 	private static Incident i2;
@@ -118,4 +129,64 @@ public class IncidentControllerTest {
 	void testDeleteIncident(){
 		
 	}
+
+	@Test
+	void testSavePicture() {
+		String filename = "test.txt";
+		String path = "src/test/resources/images/"+filename;
+		byte[] content = null;
+		String contentType = "text/plain";
+		MultipartFile file = new MockMultipartFile(filename,
+				filename, contentType, content);
+		
+		Incident incident = new Incident();
+		
+//		ReflectionTestUtils.invokeMethod(incidentController, "savePicture",  file, incident);
+//				
+//		assertTrue(new File(path).exists());
+//		System.out.println(incident.getScreenshotPath()); 
+//		assertEquals("", incident.getScreenshotPath());
+//		System.out.println(incident.getScreenshotWebPath()); 
+//		assertEquals("", incident.getScreenshotWebPath());
+//		
+
+	}
+	
+	
+	
+	@Test
+	void testScreenshotIsPresent() {
+		MultipartFile nullFile = null;
+		Boolean result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent",  nullFile);
+		assertFalse(result);
+		
+		String filename = "test.txt";
+		byte[] content = null;
+		String contentType = "text/plain";
+						
+		MultipartFile file = new MockMultipartFile(filename,
+				filename, contentType, content);
+		
+		result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent", file);
+		assertTrue(result);
+	}
+	
+	@Test
+	void testGetOriginalFilename() {
+		String filename = "test.txt";
+		byte[] content = null;
+		String contentType = "text/plain";
+		
+		
+		MultipartFile file = new MockMultipartFile(filename,
+				filename, contentType, content);
+		String result = ReflectionTestUtils.invokeMethod(incidentController, "getOriginalFilename", file);
+		assertEquals(filename, result);
+
+		MultipartFile emptyFile = new MockMultipartFile("test", "", "", content);
+		result = ReflectionTestUtils.invokeMethod(incidentController, "getOriginalFilename", emptyFile);
+		assertEquals("", result);
+	}
+	
+
 }

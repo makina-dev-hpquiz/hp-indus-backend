@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.makina.industrialisation.configuration.TomcatConfiguration;
+import com.makina.industrialisation.formatters.ImgWebPathFormatter;
 import com.makina.industrialisation.models.Incident;
 import com.makina.industrialisation.services.IncidentService;
 import com.makina.industrialisation.utils.FileManager;
@@ -39,8 +40,10 @@ public class IncidentController {
 	
 	@Autowired 
 	TomcatConfiguration tomcatConfiguration;
+
+	@Autowired
+	ImgWebPathFormatter webPathFormatter;
 	
-	private final String WEB_PATH = "http:\\\\192.168.1.11:8080\\images\\";
 	
 	@PutMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Incident updateIncident(@ModelAttribute("incident") Incident incident, @RequestParam(value = "screenshot", required = false) MultipartFile screenshot,
@@ -48,16 +51,22 @@ public class IncidentController {
 		
 		Incident oldIncident = incidentService.findById(incident.getId());
 
-		if(screenshot.getOriginalFilename()!= null && !screenshot.getOriginalFilename().equals(FileManager.getName(oldIncident.getScreenshotPath()))) {
-			FileManager.deleteFile(oldIncident.getScreenshotPath());
-			oldIncident.setScreenshotPath("");
-			oldIncident.setScreenshotWebPath("");
-			savePicture(screenshot, incident);
+		if(screenshotIsPresent(screenshot)) {
+			String originalFilename = this.getOriginalFilename(screenshot);
+			if(!originalFilename.equals(FileManager.getName(oldIncident.getScreenshotPath()))) {
+				FileManager.deleteFile(oldIncident.getScreenshotPath());
+				savePicture(screenshot, incident);
+			}
+		} else {
+			if(!oldIncident.getScreenshotPath().equals("")) {
+				FileManager.deleteFile(oldIncident.getScreenshotPath());
+			}
 		}
-		
 		return incidentService.saveIncident(incident);
 		
 	}
+	
+	
 	
 	@PostMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Incident saveIncident(@ModelAttribute("incident") Incident incident, @RequestParam(value = "screenshot", required = false) MultipartFile screenshot,
@@ -69,13 +78,7 @@ public class IncidentController {
 	}
 	
 	
-	private void savePicture(MultipartFile screenshot, Incident incident) {
-		if(screenshot != null) {
-			FileManager.saveFile(screenshot,  tomcatConfiguration.getImgPath());
-			incident.setScreenshotPath( tomcatConfiguration.getImgPath()+screenshot.getOriginalFilename());
-			incident.setScreenshotWebPath(WEB_PATH+screenshot.getOriginalFilename()); //TODO ReUseWebPathFormatter
-		}
-	}
+	
 	
 	@GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Incident> getIncidents() {
@@ -98,4 +101,49 @@ public class IncidentController {
 		incidentService.deleteIncidentById(id);
 	}
 
+	/**
+	 * Effectue les différentes actions d'enregistrement d'une image :
+	 * Sauvegarde en dur
+	 * Ajout des nouvelles informations de chemin d'accès dans l'objet incident
+	 * @param screenshot
+	 * @param incident
+	 */
+	private void savePicture(MultipartFile screenshot, Incident incident) {
+		if(this.screenshotIsPresent(screenshot)) {
+			FileManager.saveFile(screenshot,  tomcatConfiguration.getImgPath());
+			incident.setScreenshotPath( tomcatConfiguration.getImgPath()+screenshot.getOriginalFilename());
+			incident.setScreenshotWebPath(webPathFormatter.format(screenshot.getOriginalFilename()));
+		}
+	}
+	
+	/**
+	 * Indique si une image est bien présente
+	 * @param screenshot
+	 * @return boolean
+	 */
+	private boolean screenshotIsPresent(MultipartFile screenshot) {
+		if(screenshot != null) {	
+			return !"".equals(getOriginalFilename(screenshot));
+		}
+		return false;
+	}
+	
+	/**
+	 * Retourne le MultipartFile.getOriginalFilename
+	 * Lance un NullPointerException si la valeur est null.
+	 * @param screenshot
+	 * @return String
+	 */
+	private String getOriginalFilename(MultipartFile screenshot) {
+		if(screenshot!= null ) {
+			String originalFilename = screenshot.getOriginalFilename();
+			if(originalFilename != null) {
+				return originalFilename;
+			} else {
+				throw new NullPointerException("La valeur MultipartFile.getOriginalFilename est null.");
+			}
+		} else {
+			throw new NullPointerException("Le MultipartFile est null.");
+		}
+	}
 }
