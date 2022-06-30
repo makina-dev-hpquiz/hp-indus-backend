@@ -8,16 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,11 +41,10 @@ public class IncidentController {
 	@Autowired
 	ImgWebPathFormatter webPathFormatter;
 	
-	
 	@PutMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Incident updateIncident(@ModelAttribute("incident") Incident incident, @RequestParam(value = "screenshot", required = false) MultipartFile screenshot,
-			ModelMap modelMap) {
-		
+	public ResponseEntity<Incident> updateIncident(Incident incident, MultipartFile screenshot) {
+		logger.debug("Appel de l'API updateIncident INCIDENT : {}", incident.getId());
+
 		Incident oldIncident = incidentService.findById(incident.getId());
 
 		if(screenshotIsPresent(screenshot)) {
@@ -62,23 +58,18 @@ public class IncidentController {
 				FileManager.deleteFile(oldIncident.getScreenshotPath());
 			}
 		}
-		return incidentService.saveIncident(incident);
-		
+		incident =  incidentService.saveIncident(incident);
+		return new ResponseEntity<>(incident, incident != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);		
 	}
-	
-	
 	
 	@PostMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Incident saveIncident(@ModelAttribute("incident") Incident incident, @RequestParam(value = "screenshot", required = false) MultipartFile screenshot,
-			ModelMap modelMap) {
-		logger.debug("Appel de l'API saveIncident");
-				
+	public ResponseEntity<Incident> saveIncident(Incident incident, MultipartFile screenshot) {
+		logger.debug("Appel de l'API saveIncident INCIDENT : {}", incident.getId());
+
 		savePicture(screenshot, incident);
-		return incidentService.saveIncident(incident);
+		incident =  incidentService.saveIncident(incident);
+		return new ResponseEntity<>(incident, incident != null ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR);		
 	}
-	
-	
-	
 	
 	@GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Incident> getIncidents() {
@@ -96,9 +87,11 @@ public class IncidentController {
 	}
 	
 
-	@DeleteMapping(value="/delete/{id}")
-	public void deleteIncident(@PathVariable("id") String id) {
+	@DeleteMapping(value="/{id}")
+	public ResponseEntity<HttpStatus> deleteIncident(@PathVariable("id") String id) {
+		logger.debug("Appel de l'API deleteIncident : {}", id);
 		incidentService.deleteIncidentById(id);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 
 	/**
@@ -110,7 +103,7 @@ public class IncidentController {
 	 */
 	private void savePicture(MultipartFile screenshot, Incident incident) {
 		if(this.screenshotIsPresent(screenshot)) {
-			FileManager.saveFile(screenshot,  tomcatConfiguration.getImgPath());
+			FileManager.saveFile(screenshot, tomcatConfiguration.getImgPath());
 			incident.setScreenshotPath( tomcatConfiguration.getImgPath()+screenshot.getOriginalFilename());
 			incident.setScreenshotWebPath(webPathFormatter.format(screenshot.getOriginalFilename()));
 		}

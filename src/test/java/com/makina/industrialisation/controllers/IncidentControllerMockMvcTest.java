@@ -1,10 +1,9 @@
 package com.makina.industrialisation.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,24 +16,29 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.makina.industrialisation.configuration.TomcatConfiguration;
 import com.makina.industrialisation.models.Incident;
 
+/**
+ * Test les méthodes EndPoint de IncidentController
+ * @author PC Valentin
+ *
+ */
 @ActiveProfiles("test")
 @WebMvcTest(IncidentController.class)
-@Import(TomcatConfiguration.class)
-public class IncidentControllerTest {
+public class IncidentControllerMockMvcTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -44,10 +48,7 @@ public class IncidentControllerTest {
 	 
 	@MockBean
 	private IncidentController incidentController;
-		
-	 @Autowired
-	 private TomcatConfiguration tomcatConfiguration;
-	
+			
 	private static Incident i1;
 	private static Incident i2;
 	private static Incident i3;
@@ -121,72 +122,61 @@ public class IncidentControllerTest {
 	}
 	
 	@Test
-	void testUploadBugsScreen(){
-		
-	}
-	
-	@Test
-	void testDeleteIncident(){
-		
-	}
-
-	@Test
-	void testSavePicture() {
-		String filename = "test.txt";
-		String path = "src/test/resources/images/"+filename;
-		byte[] content = null;
-		String contentType = "text/plain";
-		MultipartFile file = new MockMultipartFile(filename,
-				filename, contentType, content);
-		
-		Incident incident = new Incident();
-		
-//		ReflectionTestUtils.invokeMethod(incidentController, "savePicture",  file, incident);
-//				
-//		assertTrue(new File(path).exists());
-//		System.out.println(incident.getScreenshotPath()); 
-//		assertEquals("", incident.getScreenshotPath());
-//		System.out.println(incident.getScreenshotWebPath()); 
-//		assertEquals("", incident.getScreenshotWebPath());
-//		
-
-	}
-	
-	
-	
-	@Test
-	void testScreenshotIsPresent() {
-		MultipartFile nullFile = null;
-		Boolean result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent",  nullFile);
-		assertFalse(result);
+	void testSaveIncident() throws JsonProcessingException, Exception{
 		
 		String filename = "test.txt";
 		byte[] content = null;
 		String contentType = "text/plain";
 						
-		MultipartFile file = new MockMultipartFile(filename,
+		MockMultipartFile file = new MockMultipartFile(filename,
 				filename, contentType, content);
-		
-		result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent", file);
-		assertTrue(result);
+
+		when(incidentController.saveIncident(any(), any())).thenReturn(new ResponseEntity<>(i1, HttpStatus.CREATED)); //(ResponseEntity.status(HttpStatus.CREATED).body(i1)); //HttpStatus.CREATED
+
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/incidents")
+				.file(file)
+				.content(objectMapper.writeValueAsString(i1))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isCreated())
+	    .andExpect(content().string(objectMapper.writeValueAsString(i1)));	
 	}
 	
 	@Test
-	void testGetOriginalFilename() {
+	void testUpdateIncident() throws JsonProcessingException, Exception {
 		String filename = "test.txt";
 		byte[] content = null;
 		String contentType = "text/plain";
-		
-		
-		MultipartFile file = new MockMultipartFile(filename,
+						
+		MockMultipartFile file = new MockMultipartFile(filename,
 				filename, contentType, content);
-		String result = ReflectionTestUtils.invokeMethod(incidentController, "getOriginalFilename", file);
-		assertEquals(filename, result);
+		
+		when(incidentController.updateIncident(any(), any())).thenReturn(new ResponseEntity<>(i1, HttpStatus.CREATED)); //(ResponseEntity.status(HttpStatus.CREATED).body(i1)); //HttpStatus.CREATED
 
-		MultipartFile emptyFile = new MockMultipartFile("test", "", "", content);
-		result = ReflectionTestUtils.invokeMethod(incidentController, "getOriginalFilename", emptyFile);
-		assertEquals("", result);
+		MockMultipartHttpServletRequestBuilder builder =
+	            MockMvcRequestBuilders.multipart("/incidents");
+	    builder.with(new RequestPostProcessor() {
+	        @Override
+	        public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+	            request.setMethod("PUT");
+	            return request;
+	        }
+	    });
+		
+		mockMvc.perform(builder
+				.file(file)
+				.content(objectMapper.writeValueAsString(i1))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isCreated())
+	    .andExpect(content().string(objectMapper.writeValueAsString(i1)));	
 	}
 	
+	@Test
+	void testDeleteIncident() throws Exception{
+		when(incidentController.deleteIncident(i1.getId().toString())).thenReturn(new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED));
+		mockMvc.perform(delete("/incidents/"+i1.getId())).andExpect(status().isAccepted());
+	}
+
 
 }
