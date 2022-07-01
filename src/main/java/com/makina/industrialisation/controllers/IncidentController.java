@@ -55,6 +55,8 @@ public class IncidentController {
 			}
 		} else {
 			if(!oldIncident.getScreenshotPath().equals("")) {
+				incident.setScreenshotPath("");
+				incident.setScreenshotWebPath("");
 				FileManager.deleteFile(oldIncident.getScreenshotPath());
 			}
 		}
