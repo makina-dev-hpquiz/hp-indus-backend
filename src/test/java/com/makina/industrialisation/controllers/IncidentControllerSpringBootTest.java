@@ -2,6 +2,7 @@ package com.makina.industrialisation.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.makina.industrialisation.configuration.TomcatConfiguration;
+import com.makina.industrialisation.dto.IncidentDTO;
 import com.makina.industrialisation.models.Incident;
 
 
@@ -45,92 +48,46 @@ class IncidentControllerSpringBootTest {
 	private static String filename1 = "test1.txt";
 	private static String filename2 = "test2.txt";
 	private static String filename3 = "test3.txt";
+
+	private static MultipartFile file1;
+	private static MultipartFile file2;
+	private static MultipartFile file3;
+	private static MultipartFile nullFile;
+	private static MultipartFile emptyFile;
+	
+	
 	private static String path = "test.txt";
-	private static Incident i1;
-	private static Incident i2;
+	private static IncidentDTO i1;
+	private static IncidentDTO i2;
 
-	@Test
-	void testSavePicture() throws UnknownHostException {
-		path = configuration.getImgPath()+filename1;
-		byte[] content = null;
-		String contentType = "text/plain";
-		MultipartFile file = new MockMultipartFile(filename1,
-				filename1, contentType, content);
+	@BeforeAll
+	public static void setUp() {		
+		i1 = new IncidentDTO("test1", "description 1", "", "", "mineur", "01/07/2022", "interface");
+		i2 = new IncidentDTO("test2", "description 2", "", "", "normal", "05/07/2022", "interface");
 		
-		Incident incident = new Incident();
-		ReflectionTestUtils.invokeMethod(incidentController, "savePicture",  file, incident);
-		assertTrue(new File(path).exists());
-		assertEquals(path, incident.getScreenshotPath());
-		
-		String ipAddress = InetAddress.getLocalHost().getHostAddress();
-		assertEquals("http://"+ipAddress+":"+configuration.getPort()+"/images/"+filename1, incident.getScreenshotWebPath());
-	}
-	
-	
-	
-	@Test
-	void testScreenshotIsPresent() {
-		MultipartFile nullFile = null;
-		Boolean result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent",  nullFile);
-		assertFalse(result);
-		
-		String filename = "test.txt";
 		byte[] content = null;
 		String contentType = "text/plain";
 						
-		MultipartFile file = new MockMultipartFile(filename,
-				filename, contentType, content);
-		
-		result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent", file);
-		assertTrue(result);
-		
-						
-		file = new MockMultipartFile(filename,
-				"", contentType, content);
-		
-		result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent", file);
-		assertFalse(result);
-	}
-	
-	@Test
-	void testGetOriginalFilename() {
-		String filename = "test.txt";
-		byte[] content = null;
-		String contentType = "text/plain";
-		
-		MultipartFile file = new MockMultipartFile(filename,
-				filename, contentType, content);
-		String result = ReflectionTestUtils.invokeMethod(incidentController, "getOriginalFilename", file);
-		assertEquals(filename, result);
-
-		MultipartFile emptyFile = new MockMultipartFile("test", "", "", content);
-		result = ReflectionTestUtils.invokeMethod(incidentController, "getOriginalFilename", emptyFile);
-		assertEquals("", result);
+		file1 = new MockMultipartFile(filename1, filename1, contentType, content);
+		file2 = new MockMultipartFile(filename2, filename2, contentType, content);
+		file3 = new MockMultipartFile(filename3, filename3, contentType, content);
+		nullFile = null;
+		emptyFile =  new MockMultipartFile(path, null, contentType, content);
 	}
 	
 	@Order(1)
 	@Test
 	void testSaveIncident(){
-		byte[] content = null;
-		String contentType = "text/plain";
-						
-		MultipartFile file = new MockMultipartFile(filename2,
-				filename2, contentType, content);
-		
-		i1 = new Incident("test1", "description 1", "", "", "mineur", "01/07/2022", "interface");
-		i2 = new Incident("test2", "description 2", "", "", "normal", "05/07/2022", "interface");
-		ResponseEntity<Incident> result1 = this.incidentController.saveIncident(i1, null);
-		Incident result2 = this.incidentController.saveIncident(i2, file).getBody();
+		ResponseEntity<IncidentDTO> result1 = this.incidentController.saveIncident(i1, null);
+		IncidentDTO result2 = this.incidentController.saveIncident(i2, file2).getBody();
 		
 		assertEquals(i1.getId(), result1.getBody().getId());
 		assertEquals("", result1.getBody().getScreenshotPath());
 		assertEquals(HttpStatus.CREATED, result1.getStatusCode());
 		assertEquals(i2.getId(), result2.getId());
 
-
 		assertTrue(result2.getScreenshotPath().contains(filename2));
 		assertTrue(result2.getScreenshotWebPath().contains(filename2));
-
 	}
 	
 	@Order(2)
@@ -139,23 +96,18 @@ class IncidentControllerSpringBootTest {
 		
 		String newTitle = "Test 1 Mise à jour";
 		i1.setTitle(newTitle);
-		ResponseEntity<Incident> result1 = this.incidentController.updateIncident(i1, null);
+		ResponseEntity<IncidentDTO> result1 = this.incidentController.updateIncident(i1, null);
 
 		assertEquals(i1.getId(), result1.getBody().getId());
 		assertEquals(newTitle, result1.getBody().getTitle());
 		assertEquals(HttpStatus.OK, result1.getStatusCode());
-		
-		byte[] content = null;
-		String contentType = "text/plain";
-						
-		MultipartFile file = new MockMultipartFile(filename3,
-				filename3, contentType, content);
-		ResponseEntity<Incident> result2 = this.incidentController.updateIncident(i2, file);
+								
+		ResponseEntity<IncidentDTO> result2 = this.incidentController.updateIncident(i2, file3);
 		
 		assertTrue(result2.getBody().getScreenshotPath().contains(filename3));
 		assertTrue(result2.getBody().getScreenshotWebPath().contains(filename3));
 
-		result2 = this.incidentController.updateIncident(i2, file);
+		result2 = this.incidentController.updateIncident(result2.getBody(), file3);
 		assertTrue(result2.getBody().getScreenshotPath().contains(filename3));
 		assertTrue(result2.getBody().getScreenshotWebPath().contains(filename3));
 
@@ -169,7 +121,7 @@ class IncidentControllerSpringBootTest {
 	@Order(3)
 	@Test
 	void testGetIncidents() {
-		List<Incident> incidents = this.incidentController.getIncidents();
+		List<IncidentDTO> incidents = this.incidentController.getIncidents();
 		assertEquals(2, incidents.size());
 		
 	}
@@ -177,11 +129,9 @@ class IncidentControllerSpringBootTest {
 	@Order(4)
 	@Test
 	void testGetExistIncident() {
-		ResponseEntity<Incident> resultIncident = this.incidentController.getIncident(i1.getId().toString());
+		ResponseEntity<IncidentDTO> resultIncident = this.incidentController.getIncident(i1.getId().toString());
 		assertEquals(i1.getId(), resultIncident.getBody().getId());
-		assertEquals(HttpStatus.OK, resultIncident.getStatusCode());
-		
-		
+		assertEquals(HttpStatus.OK, resultIncident.getStatusCode());				
 	}
 	
 	@Order(5)
@@ -194,10 +144,47 @@ class IncidentControllerSpringBootTest {
 	@Order(6)
 	@Test
 	void testGetNotExistIncident() {
-		ResponseEntity<Incident> resultIncident = this.incidentController.getIncident(i1.getId().toString());
+		ResponseEntity<IncidentDTO> resultIncident = this.incidentController.getIncident(i1.getId().toString());
 		assertEquals(null, resultIncident.getBody());
 		assertEquals(HttpStatus.NOT_FOUND, resultIncident.getStatusCode());
+	}
+	
+	@Test
+	void testSavePicture() throws UnknownHostException {
+		path = configuration.getImgPath()+filename1;
 		
+		Incident incident = new Incident();
+		ReflectionTestUtils.invokeMethod(incidentController, "savePicture",  file1, incident);
+		assertTrue(new File(path).exists());
+		assertEquals(path, incident.getScreenshotPath());
+		
+		String ipAddress = InetAddress.getLocalHost().getHostAddress();
+		assertEquals("http://"+ipAddress+":"+configuration.getPort()+"/images/"+filename1, incident.getScreenshotWebPath());
+	}
+		
+	@Test
+	void testScreenshotIsPresent() {
+		Boolean result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent",  nullFile);
+		assertFalse(result);
+		
+		result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent", file1);
+		assertTrue(result);
+		
+		
+		result = ReflectionTestUtils.invokeMethod(incidentController, "screenshotIsPresent", emptyFile);
+		assertFalse(result);
+	}
+	
+	@Test
+	void testGetOriginalFilename() {
+		String result = ReflectionTestUtils.invokeMethod(incidentController, "getOriginalFilename", file1);
+		assertEquals(filename1, result);
+
+		result = ReflectionTestUtils.invokeMethod(incidentController, "getOriginalFilename", emptyFile);
+		assertEquals("", result);
+		
+		MockMultipartFile nullFile = null;
+		assertThrows(NullPointerException.class, () -> ReflectionTestUtils.invokeMethod(incidentController, "getOriginalFilename", nullFile));
 	}
 	
 	@AfterAll

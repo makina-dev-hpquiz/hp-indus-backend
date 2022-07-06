@@ -1,9 +1,12 @@
 package com.makina.industrialisation.controllers;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.makina.industrialisation.configuration.TomcatConfiguration;
+import com.makina.industrialisation.dto.IncidentDTO;
 import com.makina.industrialisation.formatters.ImgWebPathFormatter;
 import com.makina.industrialisation.models.Incident;
 import com.makina.industrialisation.services.IncidentService;
@@ -41,8 +45,11 @@ public class IncidentController {
 	@Autowired
 	ImgWebPathFormatter webPathFormatter;
 	
+	ModelMapper modelMapper = new ModelMapper();
+	
 	@PutMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Incident> updateIncident(Incident incident, MultipartFile screenshot) {
+	public ResponseEntity<IncidentDTO> updateIncident(IncidentDTO incidentDTO, MultipartFile screenshot) {
+		Incident incident = modelMapper.map(incidentDTO, Incident.class);
 		logger.debug("Appel de l'API updateIncident INCIDENT : {}", incident.getId());
 
 		Incident oldIncident = incidentService.findById(incident.getId());
@@ -60,31 +67,35 @@ public class IncidentController {
 				FileManager.deleteFile(oldIncident.getScreenshotPath());
 			}
 		}
-		incident =  incidentService.saveIncident(incident);
-		return new ResponseEntity<>(incident, incident != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);		
+		incidentDTO = modelMapper.map(incidentService.saveIncident(incident), IncidentDTO.class);
+		return new ResponseEntity<>(incidentDTO, incidentDTO != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);		
 	}
 	
 	@PostMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Incident> saveIncident(Incident incident, MultipartFile screenshot) {
+	public ResponseEntity<IncidentDTO> saveIncident(IncidentDTO incidentDTO, MultipartFile screenshot) {
+		Incident incident = modelMapper.map(incidentDTO, Incident.class);
 		logger.debug("Appel de l'API saveIncident INCIDENT : {}", incident.getId());
 
 		savePicture(screenshot, incident);
-		incident =  incidentService.saveIncident(incident);
-		return new ResponseEntity<>(incident, incident != null ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR);		
+		incidentDTO = modelMapper.map(incidentService.saveIncident(incident), IncidentDTO.class);
+		return new ResponseEntity<>(incidentDTO, incidentDTO != null ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR);		
 	}
 	
 	@GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Incident> getIncidents() {
+	public List<IncidentDTO> getIncidents() {
 		logger.debug("Appel de l'API getIncidents");
-		return incidentService.findAll();
+		Stream<Incident> incidents = incidentService.findAll().stream();
+		return incidents.map(u -> modelMapper.map(u, IncidentDTO.class))
+                .collect(Collectors.toList());
 	}
 	
 
 	@GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Incident> getIncident(@PathVariable("id") String id) {
+	public ResponseEntity<IncidentDTO> getIncident(@PathVariable("id") String id) {
 		logger.debug("Appel de l'API getIncident : {}", id);
-		Incident incident = incidentService.findById(id);
-		
+				
+		Incident i = incidentService.findById(id);
+		IncidentDTO incident = i != null ? modelMapper.map(i, IncidentDTO.class) : null;
 		return new ResponseEntity<>(incident, incident != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);		
 	}
 	
@@ -105,7 +116,7 @@ public class IncidentController {
 	 */
 	private void savePicture(MultipartFile screenshot, Incident incident) {
 		if(this.screenshotIsPresent(screenshot)) {
-			FileManager.saveFile(screenshot, tomcatConfiguration.getImgPath());
+ 			FileManager.saveFile(screenshot, tomcatConfiguration.getImgPath());
 			incident.setScreenshotPath( tomcatConfiguration.getImgPath()+screenshot.getOriginalFilename());
 			incident.setScreenshotWebPath(webPathFormatter.format(screenshot.getOriginalFilename()));
 		}

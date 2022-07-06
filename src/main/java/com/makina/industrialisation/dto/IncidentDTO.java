@@ -1,54 +1,42 @@
-package com.makina.industrialisation.models;
+package com.makina.industrialisation.dto;
 
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-
-
-@Entity
-public class Incident{
-
-	@Id
+public class IncidentDTO {
+	
 	private UUID id;
-	@Column
 	private String title;
-	@Column
 	private String description;
-	@Column
 	private String screenshotPath;
-	@Column
 	private String screenshotWebPath;
-	@Column
 	private String priority;
-	@Column
 	private String date;
-	@Column
 	private String type;
 	
-	public Incident() {}
-		
-//	public Incident(UUID id, String title, String description, String screenshotPath,
-//			 String screenshotWebPath, String priority, String date, String type){
-//		
-//		this.id = id;
-//		this.title = title;
-//		this.description = description;
-//		this.screenshotPath = screenshotPath;
-//		this.screenshotWebPath = screenshotWebPath;
-//		this.priority = priority;
-//		this.date = date;
-//		this.type = type;
-//	}
-	
-	
-	public void setId(UUID id) {
-		this.id = id;
+	public IncidentDTO() {
+		this.id = UUID.randomUUID();
 	}
+	
+	public IncidentDTO(String title, String description, String screenshotPath,
+			 String screenshotWebPath, String priority, String date, String type) {
+		
+
+		this.id = UUID.randomUUID();
+		this.title = title;
+		this.description = description;
+		this.screenshotPath = screenshotPath;
+		this.screenshotWebPath = screenshotWebPath;
+		this.priority = priority;
+		this.date = date;
+		this.type = type;
+	}
+
 	public UUID getId() {
 		return id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -75,6 +63,14 @@ public class Incident{
 		this.screenshotPath = screenshotPath;
 	}
 
+	public String getScreenshotWebPath() {
+		return screenshotWebPath;
+	}
+
+	public void setScreenshotWebPath(String screenshotWebPath) {
+		this.screenshotWebPath = screenshotWebPath;
+	}
+
 	public String getPriority() {
 		return priority;
 	}
@@ -98,16 +94,6 @@ public class Incident{
 	public void setType(String type) {
 		this.type = type;
 	}
-
-	public String getScreenshotWebPath() {
-		return screenshotWebPath;
-	}
-
-	public void setScreenshotWebPath(String screenshotWebPath) {
-		this.screenshotWebPath = screenshotWebPath;
-	}
-	
-
 	
 	
 	

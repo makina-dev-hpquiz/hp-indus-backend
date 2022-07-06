@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.makina.industrialisation.models.Incident;
+import com.makina.industrialisation.dto.IncidentDTO;
 
 /**
  * Test les méthodes EndPoint de IncidentController
@@ -49,13 +49,15 @@ public class IncidentControllerMockMvcTest {
 	@MockBean
 	private IncidentController incidentController;
 			
-	private static Incident i1;
-	private static Incident i2;
-	private static Incident i3;
+	private static IncidentDTO i1;
+	private static IncidentDTO i2;
+	private static IncidentDTO i3;
+	
+	private static MockMultipartFile file;
 	
 	@BeforeAll
 	public static void setUp() {
-		i1 = new Incident();
+		i1 = new IncidentDTO();
 		i1.setTitle("Test1");
 		i1.setDescription("Description de Test1");
 		i1.setScreenshotPath("http://localhost:8080/images/test1.jpg");
@@ -64,7 +66,7 @@ public class IncidentControllerMockMvcTest {
 		i1.setDate("2022-05-31T13:26:10.144Z");
 		i1.setType("Interface");
 		
-		i2 = new Incident();
+		i2 = new IncidentDTO();
 		i2.setTitle("Test2");
 		i2.setDescription("Description de Test2");
 		i2.setScreenshotPath("http://localhost:8080/images/test2.jpg");
@@ -73,7 +75,7 @@ public class IncidentControllerMockMvcTest {
 		i2.setDate("2022-06-02T15:26:10.144Z");
 		i2.setType("Interface");
 		
-		i3 = new Incident();
+		i3 = new IncidentDTO();
 		i3.setTitle("Test3");
 		i3.setDescription("Description de Test3");
 		i3.setScreenshotPath("http://localhost:8080/images/test3.jpg");
@@ -81,24 +83,31 @@ public class IncidentControllerMockMvcTest {
 		i3.setPriority("Normal");
 		i3.setDate("2022-06-06T15:26:10.144Z");
 		i3.setType("Interface");
+		
+		String filename = "test.txt";
+		byte[] content = null;
+		String contentType = "text/plain";
+						
+		file = new MockMultipartFile(filename,
+				filename, contentType, content);
 	}
 	
 	@Test
 	void testGetIncidents() throws JsonProcessingException, Exception{
 		
-		when(incidentController.getIncidents()).thenReturn(new ArrayList<Incident>());
+		when(incidentController.getIncidents()).thenReturn(new ArrayList<IncidentDTO>());
 		
 		mockMvc.perform(get("/incidents")).andExpect(status().isOk())
-	    .andExpect(content().string(objectMapper.writeValueAsString(new ArrayList<Incident>()).toString()));
+	    .andExpect(content().string(objectMapper.writeValueAsString(new ArrayList<IncidentDTO>()).toString()));
 				
-		assertEquals("[]", objectMapper.writeValueAsString(new ArrayList<Incident>()).toString());
+		assertEquals("[]", objectMapper.writeValueAsString(new ArrayList<IncidentDTO>()).toString());
 		
-		List<Incident> resultIncidentsList = new ArrayList<>();
+		List<IncidentDTO> resultIncidentsList = new ArrayList<>();
 		resultIncidentsList.add(i1);
 		resultIncidentsList.add(i2);
 		resultIncidentsList.add(i3);
 		
-		List<Incident> expectedIncidentsList = new ArrayList<>();
+		List<IncidentDTO> expectedIncidentsList = new ArrayList<>();
 		expectedIncidentsList.add(i1);
 		expectedIncidentsList.add(i2);
 		expectedIncidentsList.add(i3);
@@ -117,21 +126,13 @@ public class IncidentControllerMockMvcTest {
 	    .andExpect(content().string(objectMapper.writeValueAsString(i1).toString()));
 		
 		
-		when(incidentController.getIncident("3")).thenReturn(new ResponseEntity<>(new Incident(), HttpStatus.NOT_FOUND));
+		when(incidentController.getIncident("3")).thenReturn(new ResponseEntity<>(new IncidentDTO(), HttpStatus.NOT_FOUND));
 		mockMvc.perform(get("/incidents/3")).andExpect(status().isNotFound());	    
 	}
 	
 	@Test
 	void testSaveIncident() throws JsonProcessingException, Exception{
-		
-		String filename = "test.txt";
-		byte[] content = null;
-		String contentType = "text/plain";
-						
-		MockMultipartFile file = new MockMultipartFile(filename,
-				filename, contentType, content);
-
-		when(incidentController.saveIncident(any(), any())).thenReturn(new ResponseEntity<>(i1, HttpStatus.CREATED)); //(ResponseEntity.status(HttpStatus.CREATED).body(i1)); //HttpStatus.CREATED
+		when(incidentController.saveIncident(any(), any())).thenReturn(new ResponseEntity<>(i1, HttpStatus.CREATED));
 
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/incidents")
 				.file(file)
@@ -144,14 +145,7 @@ public class IncidentControllerMockMvcTest {
 	
 	@Test
 	void testUpdateIncident() throws JsonProcessingException, Exception {
-		String filename = "test.txt";
-		byte[] content = null;
-		String contentType = "text/plain";
-						
-		MockMultipartFile file = new MockMultipartFile(filename,
-				filename, contentType, content);
-		
-		when(incidentController.updateIncident(any(), any())).thenReturn(new ResponseEntity<>(i1, HttpStatus.CREATED)); //(ResponseEntity.status(HttpStatus.CREATED).body(i1)); //HttpStatus.CREATED
+		when(incidentController.updateIncident(any(), any())).thenReturn(new ResponseEntity<>(i1, HttpStatus.CREATED));
 
 		MockMultipartHttpServletRequestBuilder builder =
 	            MockMvcRequestBuilders.multipart("/incidents");
@@ -177,6 +171,4 @@ public class IncidentControllerMockMvcTest {
 		when(incidentController.deleteIncident(i1.getId().toString())).thenReturn(new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED));
 		mockMvc.perform(delete("/incidents/"+i1.getId())).andExpect(status().isAccepted());
 	}
-
-
 }
