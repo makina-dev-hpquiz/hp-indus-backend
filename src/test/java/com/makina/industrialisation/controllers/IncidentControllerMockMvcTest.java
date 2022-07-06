@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,7 @@ public class IncidentControllerMockMvcTest {
 	@BeforeAll
 	public static void setUp() {
 		i1 = new IncidentDTO();
+		i1.setId(UUID.fromString("d7cd23b8-991c-470f-ac63-d8fb106f391e"));
 		i1.setTitle("Test1");
 		i1.setDescription("Description de Test1");
 		i1.setScreenshotPath("http://localhost:8080/images/test1.jpg");
@@ -67,6 +69,7 @@ public class IncidentControllerMockMvcTest {
 		i1.setType("Interface");
 		
 		i2 = new IncidentDTO();
+		i2.setId(UUID.fromString("d7cd23b8-991c-470f-ac63-d8fb106f3915"));
 		i2.setTitle("Test2");
 		i2.setDescription("Description de Test2");
 		i2.setScreenshotPath("http://localhost:8080/images/test2.jpg");
@@ -76,6 +79,7 @@ public class IncidentControllerMockMvcTest {
 		i2.setType("Interface");
 		
 		i3 = new IncidentDTO();
+		i3.setId(UUID.fromString("d7cd23b8-991c-470f-ac63-d8fb106f3933"));
 		i3.setTitle("Test3");
 		i3.setDescription("Description de Test3");
 		i3.setScreenshotPath("http://localhost:8080/images/test3.jpg");

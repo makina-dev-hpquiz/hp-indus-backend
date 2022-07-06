@@ -14,14 +14,11 @@ public class IncidentDTO {
 	private String type;
 	
 	public IncidentDTO() {
-		this.id = UUID.randomUUID();
 	}
 	
 	public IncidentDTO(String title, String description, String screenshotPath,
 			 String screenshotWebPath, String priority, String date, String type) {
 		
-
-		this.id = UUID.randomUUID();
 		this.title = title;
 		this.description = description;
 		this.screenshotPath = screenshotPath;

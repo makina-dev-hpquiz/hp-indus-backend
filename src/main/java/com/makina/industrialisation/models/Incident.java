@@ -4,7 +4,10 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 
@@ -12,6 +15,12 @@ import javax.persistence.Id;
 public class Incident{
 
 	@Id
+	@GeneratedValue(generator = "UUID")
+	    @GenericGenerator(
+	        name = "UUID",
+	        strategy = "org.hibernate.id.UUIDGenerator"
+	)
+	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 	@Column
 	private String title;
@@ -27,22 +36,7 @@ public class Incident{
 	private String date;
 	@Column
 	private String type;
-	
-	public Incident() {}
 		
-//	public Incident(UUID id, String title, String description, String screenshotPath,
-//			 String screenshotWebPath, String priority, String date, String type){
-//		
-//		this.id = id;
-//		this.title = title;
-//		this.description = description;
-//		this.screenshotPath = screenshotPath;
-//		this.screenshotWebPath = screenshotWebPath;
-//		this.priority = priority;
-//		this.date = date;
-//		this.type = type;
-//	}
-	
 	
 	public void setId(UUID id) {
 		this.id = id;
@@ -105,10 +99,5 @@ public class Incident{
 
 	public void setScreenshotWebPath(String screenshotWebPath) {
 		this.screenshotWebPath = screenshotWebPath;
-	}
-	
-
-	
-	
-	
+	}	
 }

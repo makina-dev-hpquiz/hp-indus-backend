@@ -2,6 +2,7 @@ package com.makina.industrialisation.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -81,10 +82,13 @@ class IncidentControllerSpringBootTest {
 		ResponseEntity<IncidentDTO> result1 = this.incidentController.saveIncident(i1, null);
 		IncidentDTO result2 = this.incidentController.saveIncident(i2, file2).getBody();
 		
-		assertEquals(i1.getId(), result1.getBody().getId());
+		assertNotNull(result1.getBody().getId());
 		assertEquals("", result1.getBody().getScreenshotPath());
+		i1.setId(result1.getBody().getId());
+		
 		assertEquals(HttpStatus.CREATED, result1.getStatusCode());
-		assertEquals(i2.getId(), result2.getId());
+		assertNotNull(result2.getId());
+		i2.setId(result2.getId());
 
 		assertTrue(result2.getScreenshotPath().contains(filename2));
 		assertTrue(result2.getScreenshotWebPath().contains(filename2));
