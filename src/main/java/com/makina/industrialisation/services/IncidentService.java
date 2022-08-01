@@ -75,7 +75,7 @@ public class IncidentService {
 	public void deleteIncidentById(String id) {
 		Incident incident = this.findById(id);
 		if(incident != null) {
-			if(incident.getScreenshotPath() != null) {
+			if(incident.getScreenshotPath() != null && !incident.getScreenshotPath().equals("")) {
 				FileManager.deleteFile(incident.getScreenshotPath());
 			}
 			this.incidentRepository.delete(this.findById(id));

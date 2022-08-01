@@ -48,20 +48,20 @@ public class IncidentController {
 	ModelMapper modelMapper = new ModelMapper();
 	
 	@PutMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<IncidentDTO> updateIncident(IncidentDTO incidentDTO, MultipartFile screenshot) {
+	public ResponseEntity<IncidentDTO> updateIncident(IncidentDTO incidentDTO, MultipartFile file) {
 		Incident incident = modelMapper.map(incidentDTO, Incident.class);
 		logger.debug("Appel de l'API updateIncident INCIDENT : {}", incident.getId());
 
 		Incident oldIncident = incidentService.findById(incident.getId());
 
-		if(screenshotIsPresent(screenshot)) {
-			String originalFilename = this.getOriginalFilename(screenshot);
+		if(screenshotIsPresent(file)) {
+			String originalFilename = this.getOriginalFilename(file);
 			if(!originalFilename.equals(FileManager.getName(oldIncident.getScreenshotPath()))) {
 				FileManager.deleteFile(oldIncident.getScreenshotPath());
-				savePicture(screenshot, incident);
+				savePicture(file, incident);
 			}
 		} else {
-			if(!oldIncident.getScreenshotPath().equals("")) {
+			if(incident.getScreenshotPath().equals("")) {
 				incident.setScreenshotPath("");
 				incident.setScreenshotWebPath("");
 				FileManager.deleteFile(oldIncident.getScreenshotPath());
@@ -72,11 +72,11 @@ public class IncidentController {
 	}
 	
 	@PostMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<IncidentDTO> saveIncident(IncidentDTO incidentDTO, MultipartFile screenshot) {
+	public ResponseEntity<IncidentDTO> saveIncident(IncidentDTO incidentDTO, MultipartFile file) {
 		Incident incident = modelMapper.map(incidentDTO, Incident.class);
-		logger.debug("Appel de l'API saveIncident INCIDENT : {}", incident.getId());
+		logger.debug("Appel de l'API saveIncident");
 
-		savePicture(screenshot, incident);
+		savePicture(file, incident);
 		incidentDTO = modelMapper.map(incidentService.saveIncident(incident), IncidentDTO.class);
 		return new ResponseEntity<>(incidentDTO, incidentDTO != null ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR);		
 	}
@@ -119,7 +119,7 @@ public class IncidentController {
  			FileManager.saveFile(screenshot, tomcatConfiguration.getImgPath());
 			incident.setScreenshotPath( tomcatConfiguration.getImgPath()+screenshot.getOriginalFilename());
 			incident.setScreenshotWebPath(webPathFormatter.format(screenshot.getOriginalFilename()));
-		}
+		} 
 	}
 	
 	/**
@@ -144,6 +144,7 @@ public class IncidentController {
 		if(screenshot!= null ) {
 			String originalFilename = screenshot.getOriginalFilename();
 			if(originalFilename != null) {
+				logger.debug("La valeur MultipartFile.getOriginalFilename est {}", originalFilename);
 				return originalFilename;
 			} else {
 				throw new NullPointerException("La valeur MultipartFile.getOriginalFilename est null.");
