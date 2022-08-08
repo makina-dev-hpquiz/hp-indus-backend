@@ -27,6 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.makina.industrialisation.configuration.TomcatConfiguration;
+import com.makina.industrialisation.constants.IncidentControllerConstants;
 import com.makina.industrialisation.dto.IncidentDTO;
 import com.makina.industrialisation.models.Incident;
 
@@ -125,7 +126,7 @@ class IncidentControllerSpringBootTest {
 	@Order(3)
 	@Test
 	void testGetIncidents() {
-		List<IncidentDTO> incidents = this.incidentController.getIncidents();
+		List<IncidentDTO> incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, "");
 		assertEquals(2, incidents.size());
 		
 	}

@@ -1,5 +1,4 @@
 package com.makina.industrialisation.services;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -7,6 +6,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.makina.industrialisation.models.Incident;
@@ -33,8 +33,16 @@ public class IncidentService {
 	 * Retourne tous les incidents
 	 * @return List<Incident>
 	 */
-	public List<Incident> findAll(){
-		return this.incidentRepository.findAll();
+	public List<Incident> findAll(String sortBy){
+
+		Sort sort = sortBy.contains("-") ? Sort.by(sortBy.substring(1, sortBy.length())).descending() : Sort.by(sortBy).ascending();
+				
+//		Specification<Customer> spec = Specifications.where(new CustomerWithFirstName(firstName))
+//				.and(new CustomerWithLastName(lastName))
+//				.and(new CustomerWithStatus(status))
+		
+//		this.incidentRepository.findAll(null, null)
+		return this.incidentRepository.findAll(sort);
 	}
 	
 	/**

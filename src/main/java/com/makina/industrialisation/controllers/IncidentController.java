@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.makina.industrialisation.configuration.TomcatConfiguration;
+import com.makina.industrialisation.constants.IncidentControllerConstants;
 import com.makina.industrialisation.dto.IncidentDTO;
 import com.makina.industrialisation.formatters.ImgWebPathFormatter;
 import com.makina.industrialisation.models.Incident;
@@ -82,9 +84,23 @@ public class IncidentController {
 	}
 	
 	@GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<IncidentDTO> getIncidents() {
+	public List<IncidentDTO> getIncidents(
+			@RequestParam(value="sort", defaultValue = IncidentControllerConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+			@RequestParam(value="q", required = false) String searchBy
+			){
+		System.out.println("sortBy : "+ sortBy);
+		System.out.println("searchBy : "+ searchBy);
+		
+		Stream<Incident> incidents = incidentService.findAll(sortBy).stream();
+		return incidents.map(u -> modelMapper.map(u, IncidentDTO.class))
+                .collect(Collectors.toList());
+		
+	}
+	
+	@GetMapping(value="t", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<IncidentDTO> getIncidents2() {
 		logger.debug("Appel de l'API getIncidents");
-		Stream<Incident> incidents = incidentService.findAll().stream();
+		Stream<Incident> incidents = incidentService.findAll("date").stream();
 		return incidents.map(u -> modelMapper.map(u, IncidentDTO.class))
                 .collect(Collectors.toList());
 	}

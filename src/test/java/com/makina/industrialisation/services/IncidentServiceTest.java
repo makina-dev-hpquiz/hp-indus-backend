@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.makina.industrialisation.constants.IncidentControllerConstants;
 import com.makina.industrialisation.dto.IncidentDTO;
 import com.makina.industrialisation.models.Incident;
 
@@ -33,6 +34,8 @@ class IncidentServiceTest {
 	private static Incident i3;
 
 	static ModelMapper modelMapper;
+	
+	
 	
 	@BeforeAll
 	public static void setUp() {
@@ -72,7 +75,7 @@ class IncidentServiceTest {
 	@Order(1)
 	@Test
 	void testFindAllIncidentWithZeroIncidentsInDB(){
-		List<Incident> incidents = incidentService.findAll();
+		List<Incident> incidents = incidentService.findAll(IncidentControllerConstants.DEFAULT_SORT_BY);
 		assertEquals(new ArrayList<Incident>(), incidents);
 	}
 	
@@ -92,7 +95,7 @@ class IncidentServiceTest {
 	@Order(3)
 	@Test
 	void testFindAllIncident(){
-		List<Incident> incidents = incidentService.findAll();
+		List<Incident> incidents = incidentService.findAll(IncidentControllerConstants.DEFAULT_SORT_BY);
 
 		assertEquals(3, incidents.size());
 		

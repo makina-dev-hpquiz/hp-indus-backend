@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.makina.industrialisation.constants.IncidentControllerConstants;
 import com.makina.industrialisation.dto.IncidentDTO;
 
 /**
@@ -99,7 +100,7 @@ public class IncidentControllerMockMvcTest {
 	@Test
 	void testGetIncidents() throws JsonProcessingException, Exception{
 		
-		when(incidentController.getIncidents()).thenReturn(new ArrayList<IncidentDTO>());
+		when(incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, "")).thenReturn(new ArrayList<IncidentDTO>());
 		
 		mockMvc.perform(get("/incidents")).andExpect(status().isOk())
 	    .andExpect(content().string(objectMapper.writeValueAsString(new ArrayList<IncidentDTO>()).toString()));
@@ -116,10 +117,11 @@ public class IncidentControllerMockMvcTest {
 		expectedIncidentsList.add(i2);
 		expectedIncidentsList.add(i3);
 		
+		String qValue = "test";
 		
-		when(incidentController.getIncidents()).thenReturn(resultIncidentsList);
-		
-		mockMvc.perform(get("/incidents")).andExpect(status().isOk())
+		when(incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, qValue)).thenReturn(resultIncidentsList);
+
+		mockMvc.perform(get("/incidents?sort="+IncidentControllerConstants.DEFAULT_SORT_BY+"&q="+qValue)).andExpect(status().isOk())
 	    .andExpect(content().string(objectMapper.writeValueAsString(expectedIncidentsList).toString()));
 	}
 		
