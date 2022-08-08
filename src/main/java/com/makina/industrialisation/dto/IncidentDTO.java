@@ -9,6 +9,7 @@ public class IncidentDTO {
 	private String description;
 	private String screenshotPath;
 	private String screenshotWebPath;
+	private String status;
 	private String priority;
 	private String date;
 	private String type;
@@ -17,7 +18,7 @@ public class IncidentDTO {
 	}
 	
 	public IncidentDTO(String title, String description, String screenshotPath,
-			 String screenshotWebPath, String priority, String date, String type) {
+			 String screenshotWebPath, String priority, String date, String type, String status) {
 		
 		this.title = title;
 		this.description = description;
@@ -26,6 +27,7 @@ public class IncidentDTO {
 		this.priority = priority;
 		this.date = date;
 		this.type = type;
+		this.status = status;
 	}
 
 	public UUID getId() {
@@ -90,6 +92,14 @@ public class IncidentDTO {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	

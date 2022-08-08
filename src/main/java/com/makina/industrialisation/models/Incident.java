@@ -36,6 +36,8 @@ public class Incident{
 	private String date;
 	@Column
 	private String type;
+	@Column
+	private String status;
 		
 	
 	public void setId(UUID id) {
@@ -99,5 +101,11 @@ public class Incident{
 
 	public void setScreenshotWebPath(String screenshotWebPath) {
 		this.screenshotWebPath = screenshotWebPath;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}	
 }

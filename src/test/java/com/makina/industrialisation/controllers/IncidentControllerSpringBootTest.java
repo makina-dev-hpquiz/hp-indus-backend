@@ -61,11 +61,19 @@ class IncidentControllerSpringBootTest {
 	private static String path = "test.txt";
 	private static IncidentDTO i1;
 	private static IncidentDTO i2;
+	private static IncidentDTO i3;
+	private static IncidentDTO i4;
+	private static IncidentDTO i5;
+	private static IncidentDTO i6;
+	private static IncidentDTO i7;
+	private static IncidentDTO i8;
+	private static IncidentDTO i9;
+	private static IncidentDTO i10;
 
 	@BeforeAll
 	public static void setUp() {		
-		i1 = new IncidentDTO("test1", "description 1", "", "", "mineur", "01/07/2022", "interface");
-		i2 = new IncidentDTO("test2", "description 2", "", "", "normal", "05/07/2022", "interface");
+		i1 = new IncidentDTO("test1", "description 1", "", "", "basse", "01/07/2022", "interface", "En attente");
+		i2 = new IncidentDTO("test2", "description 2", "", "", "normal", "05/07/2022", "interface", "En attente");
 		
 		byte[] content = null;
 		String contentType = "text/plain";
@@ -126,6 +134,22 @@ class IncidentControllerSpringBootTest {
 	@Order(3)
 	@Test
 	void testGetIncidents() {
+		
+		// T1 : getIncidents : Avec tri (default)
+		// T2 : getIncidents : Avec tri inversé
+		// T3 : getIncidents : Avec tri (default) + 1 status
+		// T4 : getIncidents : Avec tri (default) + 2 status
+		// T5 : getIncidents : Avec tri (default) + 3 status
+		// T6 : getIncidents : Avec tri (default) + priorité
+		// T7 : getIncidents : Avec tri (default) + type incident
+		// T8 : getIncidents : Avec tri (default) + mot clef
+		// T9 : getIncidents : Avec tri (default) + 2 status + priorité
+		// T10 : getIncidents : Avec tri (default) + 2 status + incident
+		// T11 : getIncidents : Avec tri (default) + 2 status + priorité + incident + mot clef
+		
+		
+		
+		
 		List<IncidentDTO> incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, "");
 		assertEquals(2, incidents.size());
 		

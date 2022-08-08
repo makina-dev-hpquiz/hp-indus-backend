@@ -49,6 +49,7 @@ class IncidentServiceTest {
 		i1DTO.setPriority("Normal");
 		i1DTO.setDate("2022-05-31T13:26:10.144Z");
 		i1DTO.setType("Interface");
+		i1DTO.setType("En cours");
 		
 		IncidentDTO i2DTO = new IncidentDTO();
 		i2DTO.setTitle("Test2 sans image");
@@ -56,6 +57,7 @@ class IncidentServiceTest {
 		i2DTO.setPriority("Normal");
 		i2DTO.setDate("2022-06-02T15:26:10.144Z");
 		i2DTO.setType("Interface");
+		i2DTO.setType("En cours");
 		
 		IncidentDTO i3DTO = new IncidentDTO();
 		i3DTO.setTitle("Test3");
@@ -65,6 +67,7 @@ class IncidentServiceTest {
 		i3DTO.setPriority("Normal");
 		i3DTO.setDate("2022-05-31T13:26:10.144Z");
 		i3DTO.setType("Interface");
+		i3DTO.setType("En cours");
 		
 		i1 = modelMapper.map(i1DTO, Incident.class);
 		i2 = modelMapper.map(i2DTO, Incident.class);
