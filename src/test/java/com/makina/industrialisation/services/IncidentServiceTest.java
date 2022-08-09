@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.modelmapper.ModelMapper;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import com.makina.industrialisation.constants.IncidentControllerConstants;
 import com.makina.industrialisation.dto.IncidentDTO;
 import com.makina.industrialisation.models.Incident;
+import com.makina.industrialisation.models.IncidentFilter;
 
 @TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest
@@ -78,7 +79,7 @@ class IncidentServiceTest {
 	@Order(1)
 	@Test
 	void testFindAllIncidentWithZeroIncidentsInDB(){
-		List<Incident> incidents = incidentService.findAll(IncidentControllerConstants.DEFAULT_SORT_BY, "", new ArrayList<String>(), "", "");
+		List<Incident> incidents = incidentService.findAll(new IncidentFilter(IncidentControllerConstants.DEFAULT_SORT_BY, "", new String[] {}, "", ""));
 		assertEquals(new ArrayList<Incident>(), incidents);
 	}
 	
@@ -98,7 +99,7 @@ class IncidentServiceTest {
 	@Order(3)
 	@Test
 	void testFindAllIncident(){
-		List<Incident> incidents = incidentService.findAll(IncidentControllerConstants.DEFAULT_SORT_BY, "", new ArrayList<String>(), "", "");
+		List<Incident> incidents = incidentService.findAll(new IncidentFilter(IncidentControllerConstants.DEFAULT_SORT_BY, "",  new String[] {}, "", ""));
 
 		assertEquals(3, incidents.size());
 		

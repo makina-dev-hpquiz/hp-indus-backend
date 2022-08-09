@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.makina.industrialisation.models.Incident;
+import com.makina.industrialisation.models.IncidentFilter;
 import com.makina.industrialisation.repositories.IncidentRepository;
 import com.makina.industrialisation.specifications.IncidentSpecifications;
 import com.makina.industrialisation.utils.FileManager;
@@ -40,21 +41,21 @@ public class IncidentService {
 	 * @param incidentType 
 	 * @return List<Incident>
 	 */
-	public List<Incident> findAll(String sortBy, String searchBy, List<String> status, String priorityLevel, String incidentType){
-
-		Sort sort = sortBy.contains("-") ? Sort.by(sortBy.substring(1, sortBy.length())).descending() : Sort.by(sortBy).ascending();
+	public List<Incident> findAll(IncidentFilter incidentFilter){
+//		String sortBy, String searchBy, List<String> status, String priorityLevel, String incidentType
+		Sort sort = incidentFilter.getSortBy().contains("-") ? Sort.by(incidentFilter.getSortBy().substring(1, incidentFilter.getSortBy().length())).descending() : Sort.by(incidentFilter.getSortBy()).ascending();
 		Specification<Incident> spec = null;
-		if(status.size() > 0) {
-			spec = incidentSpecification.addSpecification(spec, incidentSpecification.hasStatus(status));
+		if(incidentFilter.getStatus().size() > 0) {
+			spec = incidentSpecification.addSpecification(spec, incidentSpecification.hasStatus(incidentFilter.getStatus()));
 		}
-		if(priorityLevel != null && !priorityLevel.equals("") ) { //TODO
-			spec = incidentSpecification.addSpecification(spec, incidentSpecification.hasPriority(priorityLevel));
+		if(incidentFilter.getPriorityLevel() != null && !incidentFilter.getPriorityLevel().equals("") ) { //TODO
+			spec = incidentSpecification.addSpecification(spec, incidentSpecification.hasPriority(incidentFilter.getPriorityLevel()));
 		}
-		if(incidentType != null && !incidentType.equals("")) { //TODO
-			spec = incidentSpecification.addSpecification(spec, incidentSpecification.isType(incidentType));
+		if(incidentFilter.getIncidentType() != null && !incidentFilter.getIncidentType().equals("")) { //TODO
+			spec = incidentSpecification.addSpecification(spec, incidentSpecification.isType(incidentFilter.getIncidentType()));
 		}
-		if(searchBy != null && !searchBy.equals("")) {
-			spec = incidentSpecification.addSpecification(spec, incidentSpecification.likeTitle(searchBy));
+		if(incidentFilter.getSearchBy() != null && !incidentFilter.getSearchBy().equals("")) {
+			spec = incidentSpecification.addSpecification(spec, incidentSpecification.likeTitle(incidentFilter.getSearchBy()));
 		}
 		return spec != null ? this.incidentRepository.findAll(spec, sort) : this.incidentRepository.findAll(sort);
 	}

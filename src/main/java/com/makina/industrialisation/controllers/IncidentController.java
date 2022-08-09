@@ -29,6 +29,7 @@ import com.makina.industrialisation.constants.IncidentControllerConstants;
 import com.makina.industrialisation.dto.IncidentDTO;
 import com.makina.industrialisation.formatters.ImgWebPathFormatter;
 import com.makina.industrialisation.models.Incident;
+import com.makina.industrialisation.models.IncidentFilter;
 import com.makina.industrialisation.services.IncidentService;
 import com.makina.industrialisation.utils.FileManager;
 
@@ -89,21 +90,22 @@ public class IncidentController {
 	public List<IncidentDTO> getIncidents(
 			@RequestParam(value="sort", defaultValue = IncidentControllerConstants.DEFAULT_SORT_BY, required = false) String sortBy,
 			@RequestParam(value="q", required = false) String searchBy,
-			@RequestParam(value="status", required = false) String[] statusArray, 
+			@RequestParam(value="status", required = false) String[] status, 
 			@RequestParam(value="priority", required = false) String priorityLevel,
 			@RequestParam(value="type", required = false) String incidentType
 			){
 
-		logger.debug("getIncidents : {}, {}, {}, {}, {}", sortBy, searchBy, statusArray, priorityLevel, incidentType);
+		logger.debug("getIncidents : {}, {}, {}, {}, {}", sortBy, searchBy, status, priorityLevel, incidentType);
 		//Mettre une place permettant de controller les entrée
-		List<String> status;
-		if(statusArray != null ) {
-			status = new ArrayList<String>(Arrays.asList(statusArray)); 
-		} else {
-			status = new ArrayList<String>();
-		}
+//		List<String> status;
+//		if(statusArray != null ) {
+//			status = new ArrayList<String>(Arrays.asList(statusArray)); 
+//		} else {
+//			status = new ArrayList<String>();
+//		}
 		
-		Stream<Incident> incidents = incidentService.findAll(sortBy, searchBy, status, priorityLevel, incidentType).stream();
+		
+		Stream<Incident> incidents = incidentService.findAll(new IncidentFilter(sortBy, searchBy, status, priorityLevel, incidentType)).stream();
 		return incidents.map(u -> modelMapper.map(u, IncidentDTO.class))
                 .collect(Collectors.toList());
 		
