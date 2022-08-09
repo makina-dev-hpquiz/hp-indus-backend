@@ -1,7 +1,5 @@
 package com.makina.industrialisation.controllers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -96,14 +94,6 @@ public class IncidentController {
 			){
 
 		logger.debug("getIncidents : {}, {}, {}, {}, {}", sortBy, searchBy, status, priorityLevel, incidentType);
-		//Mettre une place permettant de controller les entrée
-//		List<String> status;
-//		if(statusArray != null ) {
-//			status = new ArrayList<String>(Arrays.asList(statusArray)); 
-//		} else {
-//			status = new ArrayList<String>();
-//		}
-		
 		
 		Stream<Incident> incidents = incidentService.findAll(new IncidentFilter(sortBy, searchBy, status, priorityLevel, incidentType)).stream();
 		return incidents.map(u -> modelMapper.map(u, IncidentDTO.class))

@@ -10,22 +10,15 @@ public class IncidentFilter {
 	private List<String> status;
 	private String priorityLevel;
 	private String incidentType;
+	
 	public IncidentFilter(String sortBy, String searchBy, String[] status, String priorityLevel, String incidentType){
 		this.sortBy = sortBy;
 		this.searchBy = searchBy;
 		this.status = (status != null) ? new ArrayList<String>(Arrays.asList(status)) : new ArrayList<String>();
-//		status != null ? this.status = new ArrayList<String>(Arrays.asList(statusArray)) : this.status = new ArrayList<String>();
-//		if(status != null ) {
-//			status = new ArrayList<String>(Arrays.asList(statusArray)); 
-//		} else {
-//			status = new ArrayList<String>();
-//		}
 		this.priorityLevel = priorityLevel;
 		this.incidentType = incidentType;
 		
 	}
-	
-	
 	
 	public String getSortBy() {
 		return sortBy;
