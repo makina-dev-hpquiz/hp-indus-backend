@@ -6,7 +6,7 @@ import java.util.List;
 public class IncidentType {
 
 	public static final String SCREEN = "interface";
-	public static final String WORD = "ortographe";
+	public static final String WORD = "orthographe";
 	public static final String EVENT = "evenement";
 	
 	public static List<String> get(){
