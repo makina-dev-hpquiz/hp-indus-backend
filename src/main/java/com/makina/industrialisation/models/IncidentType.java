@@ -1,15 +1,17 @@
 package com.makina.industrialisation.models;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class IncidentType extends AbstractIncidentComposante{
+public class IncidentType {
 
-	public static final String TO_DO = "en attente";
-	public static final String DOING = "en cours";
-	public static final String DONE = "terminé";
+	public static final String SCREEN = "interface";
+	public static final String WORD = "ortographe";
+	public static final String EVENT = "evenement";
 	
-	@Override
-	List<String> get() {
-		return super.get(TO_DO, DOING, DONE);
+	public static List<String> get(){
+		
+		return Arrays.asList(SCREEN, WORD, EVENT);	
 	}
+
 }

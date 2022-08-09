@@ -1,8 +1,9 @@
 package com.makina.industrialisation.models;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class IncidentPriority extends AbstractIncidentComposante {
+public class IncidentPriority{
 
 	public static final String HIGHT = "haute";
 	public static final String NORMAL = "normal";
@@ -10,8 +11,8 @@ public class IncidentPriority extends AbstractIncidentComposante {
 	
 	public static final String NONE_SEARCH = "aucune";
 
-	@Override
-	List<String> get() {
-		return super.get(LOW, NORMAL, HIGHT);
+	public static List<String> get(){
+		return Arrays.asList(LOW, NORMAL, HIGHT);	
 	}
+	
 }

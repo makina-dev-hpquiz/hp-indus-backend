@@ -30,6 +30,9 @@ import com.makina.industrialisation.configuration.TomcatConfiguration;
 import com.makina.industrialisation.constants.IncidentControllerConstants;
 import com.makina.industrialisation.dto.IncidentDTO;
 import com.makina.industrialisation.models.Incident;
+import com.makina.industrialisation.models.IncidentPriority;
+import com.makina.industrialisation.models.IncidentStatus;
+import com.makina.industrialisation.models.IncidentType;
 
 
 /**
@@ -67,18 +70,18 @@ class IncidentControllerSpringBootTest {
 	private static IncidentDTO i6;
 	private static IncidentDTO i7;
 	
-	private static final String TODO_MSG = "En attente";
-	private static final String DOING_MSG = "En cours";
-	private static final String DONE_MSG = "Terminé";	
+	private static final String TODO_MSG = IncidentStatus.TO_DO;
+	private static final String DOING_MSG = IncidentStatus.DOING;
+	private static final String DONE_MSG = IncidentStatus.DONE;	
 
-	private static final String SCREEN_MSG = "Interface";
-	private static final String WORD_MSG = "Ortographe";
-	private static final String EVENT_MSG = "Evènement";
+	private static final String SCREEN_MSG = IncidentType.SCREEN;
+	private static final String WORD_MSG = IncidentType.WORD;
+	private static final String EVENT_MSG = IncidentType.EVENT;
 	
 
-	private static final String DOWN_MSG = "Basse";
-	private static final String NORMAL_MSG = "Normal";
-	private static final String HIGHT_MSG = "Haute";
+	private static final String LOW_MSG = IncidentPriority.LOW;
+	private static final String NORMAL_MSG = IncidentPriority.NORMAL;
+	private static final String HIGHT_MSG = IncidentPriority.HIGHT;
 	
 	
 	private static final String[] EMPTY_TAB = new String[0];
@@ -86,8 +89,8 @@ class IncidentControllerSpringBootTest {
 	
 	@BeforeAll
 	public static void setUp() {		
-		i1 = new IncidentDTO("Panneau de recherche n'est pas responsive", "Description", "", "", DOWN_MSG, "28/07/2022", SCREEN_MSG, TODO_MSG);
-		i2 = new IncidentDTO("Erreur de texte : Question 145", "description", "", "", DOWN_MSG, "31/07/2022", WORD_MSG, TODO_MSG);
+		i1 = new IncidentDTO("Panneau de recherche n'est pas responsive", "Description", "", "", LOW_MSG, "28/07/2022", SCREEN_MSG, TODO_MSG);
+		i2 = new IncidentDTO("Erreur de texte : Question 145", "description", "", "", LOW_MSG, "31/07/2022", WORD_MSG, TODO_MSG);
 		i3 = new IncidentDTO("Le boutons ne sont pas alignés", "description", "", "", NORMAL_MSG, "15/06/2022", SCREEN_MSG, TODO_MSG);
 		i4 = new IncidentDTO("Erreur de texte : Question 146", "description", "", "", NORMAL_MSG, "09/08/2022", WORD_MSG, DOING_MSG);
 		i5 = new IncidentDTO("L'image ne s'affiche pas correctement", "description", "", "", NORMAL_MSG, "14/07/2022", SCREEN_MSG, DOING_MSG);
@@ -194,7 +197,7 @@ class IncidentControllerSpringBootTest {
 		assertEquals(7, incidents.size());
 		
 		// T6 : getIncidents : Avec tri (default) + priorité
-		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, EMPTY_TAB, DOWN_MSG, EMPTY_STRING);
+		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, EMPTY_TAB, LOW_MSG, EMPTY_STRING);
 		assertEquals(2, incidents.size());
 		
 		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, EMPTY_TAB, NORMAL_MSG, EMPTY_STRING);
@@ -215,7 +218,7 @@ class IncidentControllerSpringBootTest {
 		assertEquals(1, incidents.size());
 		
 		// T9 : getIncidents : Avec tri (default) + 2 status TODO_MSG, DOING_MSG + priorité DOWN_MSG
-		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, new String[]{TODO_MSG, DOING_MSG}, DOWN_MSG, EMPTY_STRING);
+		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, new String[]{TODO_MSG, DOING_MSG}, LOW_MSG, EMPTY_STRING);
 		assertEquals(2, incidents.size());
 		
 		// 2 status TODO_MSG, DOING_MSG + priorité HIGHT_MSG
@@ -235,7 +238,7 @@ class IncidentControllerSpringBootTest {
 		assertEquals(1, incidents.size());
 		
 		// T11 : getIncidents : Avec tri (default) + 2 status TODO_MSG, DOING_MSG + priorité DOWN_MSG + type incident SCREEN_MSG
-		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, new String[]{TODO_MSG, DOING_MSG, DONE_MSG}, DOWN_MSG, SCREEN_MSG);
+		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, new String[]{TODO_MSG, DOING_MSG, DONE_MSG}, LOW_MSG, SCREEN_MSG);
 		assertEquals(1, incidents.size());
 
 		// 2 status TODO_MSG, DOING_MSG + + priorité NORMAL_MSG + type incident SCREEN_MSG
@@ -243,7 +246,7 @@ class IncidentControllerSpringBootTest {
 		assertEquals(2, incidents.size());
 		
 		// T12 : getIncidents : Avec tri (default) + 2 status TODO_MSG, DOING_MSG + priorité DOWN_MSG + type incident WORD_MSG + mot clef "Erreur de texte" 
-		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, "Erreur de texte", new String[]{TODO_MSG, DOING_MSG, DONE_MSG}, DOWN_MSG, WORD_MSG);
+		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, "Erreur de texte", new String[]{TODO_MSG, DOING_MSG, DONE_MSG}, LOW_MSG, WORD_MSG);
 		assertEquals(1, incidents.size());
 		assertEquals(i2.getId(), incidents.get(0).getId());
 

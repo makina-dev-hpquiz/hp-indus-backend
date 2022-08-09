@@ -45,16 +45,16 @@ public class IncidentService {
 //		String sortBy, String searchBy, List<String> status, String priorityLevel, String incidentType
 		Sort sort = incidentFilter.getSortBy().contains("-") ? Sort.by(incidentFilter.getSortBy().substring(1, incidentFilter.getSortBy().length())).descending() : Sort.by(incidentFilter.getSortBy()).ascending();
 		Specification<Incident> spec = null;
-		if(incidentFilter.getStatus().size() > 0) {
+		if(incidentFilter.hasValidStatus()) {
 			spec = incidentSpecification.addSpecification(spec, incidentSpecification.hasStatus(incidentFilter.getStatus()));
 		}
-		if(incidentFilter.getPriorityLevel() != null && !incidentFilter.getPriorityLevel().equals("") ) { //TODO
+		if(incidentFilter.hasValidPriority()) {
 			spec = incidentSpecification.addSpecification(spec, incidentSpecification.hasPriority(incidentFilter.getPriorityLevel()));
 		}
-		if(incidentFilter.getIncidentType() != null && !incidentFilter.getIncidentType().equals("")) { //TODO
+		if(incidentFilter.hasValidIncidentType()) { //TODO
 			spec = incidentSpecification.addSpecification(spec, incidentSpecification.isType(incidentFilter.getIncidentType()));
 		}
-		if(incidentFilter.getSearchBy() != null && !incidentFilter.getSearchBy().equals("")) {
+		if(incidentFilter.hasValidSearchBy()) {
 			spec = incidentSpecification.addSpecification(spec, incidentSpecification.likeTitle(incidentFilter.getSearchBy()));
 		}
 		return spec != null ? this.incidentRepository.findAll(spec, sort) : this.incidentRepository.findAll(sort);
