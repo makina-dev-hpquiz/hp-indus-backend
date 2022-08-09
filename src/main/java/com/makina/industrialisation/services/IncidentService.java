@@ -12,9 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.makina.industrialisation.models.Incident;
 import com.makina.industrialisation.repositories.IncidentRepository;
+import com.makina.industrialisation.specifications.IncidentSpecifications;
 import com.makina.industrialisation.utils.FileManager;
-
-import annotations.com.makina.industrialisation.models.Incident_;
 
 @Service
 public class IncidentService {
@@ -24,8 +23,9 @@ public class IncidentService {
 	@Autowired
 	private IncidentRepository incidentRepository;
 	
-	private Specification<Incident> specification; 
-	
+	@Autowired
+	private IncidentSpecifications incidentSpecification;
+		
 	/**
 	 * Sauvegarde un incident en base de données
 	 * @param incident
@@ -43,51 +43,22 @@ public class IncidentService {
 	public List<Incident> findAll(String sortBy, String searchBy, List<String> status, String priorityLevel, String incidentType){
 
 		Sort sort = sortBy.contains("-") ? Sort.by(sortBy.substring(1, sortBy.length())).descending() : Sort.by(sortBy).ascending();
-		this.specification = null;
+		Specification<Incident> spec = null;
 		if(status.size() > 0) {
-			addSpecification(hasStatus(status));
+			spec = incidentSpecification.addSpecification(spec, incidentSpecification.hasStatus(status));
 		}
 		if(priorityLevel != null && !priorityLevel.equals("") ) { //TODO
-			addSpecification(hasPriority(priorityLevel));
+			spec = incidentSpecification.addSpecification(spec, incidentSpecification.hasPriority(priorityLevel));
 		}
 		if(incidentType != null && !incidentType.equals("")) { //TODO
-			addSpecification(isType(incidentType));
+			spec = incidentSpecification.addSpecification(spec, incidentSpecification.isType(incidentType));
 		}
 		if(searchBy != null && !searchBy.equals("")) {
-			addSpecification(likeTitle(searchBy));
+			spec = incidentSpecification.addSpecification(spec, incidentSpecification.likeTitle(searchBy));
 		}
-		return this.specification != null ? this.incidentRepository.findAll(this.specification, sort) : this.incidentRepository.findAll(sort);
+		return spec != null ? this.incidentRepository.findAll(spec, sort) : this.incidentRepository.findAll(sort);
 	}
-	
-	private void addSpecification(Specification<Incident> spec){
-		if(this.specification == null) {
-			this.specification = Specification.where(spec);
-		} else {
-			this.specification = this.specification.and(spec);
-		}		
-	}
-	
-	private Specification<Incident> hasStatus(List<String> status){
-		return (root, query, criteriaBuilder) -> 
-		      criteriaBuilder.in(root.get(Incident_.STATUS)).value(status);
-	}
-	
-	private Specification<Incident> hasPriority(String priority){
-		return (root, query, criteriaBuilder) -> 
-	      criteriaBuilder.equal(root.get(Incident_.PRIORITY), priority);
-	}
-	
-	private Specification<Incident> isType(String type){
-		return (root, query, criteriaBuilder) -> 
-	      criteriaBuilder.equal(root.get(Incident_.TYPE), type);
-	}
-	
-	private Specification<Incident> likeTitle(String title){
-		return (root, query, criteriaBuilder) -> 
-		criteriaBuilder.like(root.get(Incident_.TITLE), "%"+title+"%");
-	}
-	
-	
+		
 	/**
 	 * Retourne un incident dont l'UUID est passé en paramètre
 	 * @param UUID id
@@ -131,7 +102,5 @@ public class IncidentService {
 			}
 			this.incidentRepository.delete(this.findById(id));
 		}
-	}
-
-	
+	}	
 }
