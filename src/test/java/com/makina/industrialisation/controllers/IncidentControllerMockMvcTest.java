@@ -100,7 +100,7 @@ public class IncidentControllerMockMvcTest {
 	@Test
 	void testGetIncidents() throws JsonProcessingException, Exception{
 		
-		when(incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, "")).thenReturn(new ArrayList<IncidentDTO>());
+		when(incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, "", null, "", "")).thenReturn(new ArrayList<IncidentDTO>());
 		
 		mockMvc.perform(get("/incidents")).andExpect(status().isOk())
 	    .andExpect(content().string(objectMapper.writeValueAsString(new ArrayList<IncidentDTO>()).toString()));
@@ -118,10 +118,11 @@ public class IncidentControllerMockMvcTest {
 		expectedIncidentsList.add(i3);
 		
 		String qValue = "test";
+		String[] statusValue = new String[] {"En cours"};
 		
-		when(incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, qValue)).thenReturn(resultIncidentsList);
+		when(incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, qValue, statusValue, qValue, qValue)).thenReturn(resultIncidentsList);
 
-		mockMvc.perform(get("/incidents?sort="+IncidentControllerConstants.DEFAULT_SORT_BY+"&q="+qValue)).andExpect(status().isOk())
+		mockMvc.perform(get("/incidents?sort="+IncidentControllerConstants.DEFAULT_SORT_BY+"&q="+qValue+"&status=En cours&priority="+qValue+"&type="+qValue)).andExpect(status().isOk())
 	    .andExpect(content().string(objectMapper.writeValueAsString(expectedIncidentsList).toString()));
 	}
 		

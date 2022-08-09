@@ -1,5 +1,7 @@
 package com.makina.industrialisation.controllers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -86,26 +88,27 @@ public class IncidentController {
 	@GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<IncidentDTO> getIncidents(
 			@RequestParam(value="sort", defaultValue = IncidentControllerConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-			@RequestParam(value="q", required = false) String searchBy
+			@RequestParam(value="q", required = false) String searchBy,
+			@RequestParam(value="status", required = false) String[] statusArray, 
+			@RequestParam(value="priority", required = false) String priorityLevel,
+			@RequestParam(value="type", required = false) String incidentType
 			){
-		System.out.println("sortBy : "+ sortBy);
-		System.out.println("searchBy : "+ searchBy);
-		
-		Stream<Incident> incidents = incidentService.findAll(sortBy).stream();
-		return incidents.map(u -> modelMapper.map(u, IncidentDTO.class))
-                .collect(Collectors.toList());
-		
-	}
-	
-	@GetMapping(value="t", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<IncidentDTO> getIncidents2() {
-		logger.debug("Appel de l'API getIncidents");
-		Stream<Incident> incidents = incidentService.findAll("date").stream();
-		return incidents.map(u -> modelMapper.map(u, IncidentDTO.class))
-                .collect(Collectors.toList());
-	}
-	
 
+		logger.debug("getIncidents : {}, {}, {}, {}, {}", sortBy, searchBy, statusArray, priorityLevel, incidentType);
+		//Mettre une place permettant de controller les entrée
+		List<String> status;
+		if(statusArray != null ) {
+			status = new ArrayList<String>(Arrays.asList(statusArray)); 
+		} else {
+			status = new ArrayList<String>();
+		}
+		
+		Stream<Incident> incidents = incidentService.findAll(sortBy, searchBy, status, priorityLevel, incidentType).stream();
+		return incidents.map(u -> modelMapper.map(u, IncidentDTO.class))
+                .collect(Collectors.toList());
+		
+	}
+	
 	@GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IncidentDTO> getIncident(@PathVariable("id") String id) {
 		logger.debug("Appel de l'API getIncident : {}", id);

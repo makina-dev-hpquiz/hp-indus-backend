@@ -78,7 +78,7 @@ class IncidentServiceTest {
 	@Order(1)
 	@Test
 	void testFindAllIncidentWithZeroIncidentsInDB(){
-		List<Incident> incidents = incidentService.findAll(IncidentControllerConstants.DEFAULT_SORT_BY);
+		List<Incident> incidents = incidentService.findAll(IncidentControllerConstants.DEFAULT_SORT_BY, "", new ArrayList<String>(), "", "");
 		assertEquals(new ArrayList<Incident>(), incidents);
 	}
 	
@@ -98,7 +98,7 @@ class IncidentServiceTest {
 	@Order(3)
 	@Test
 	void testFindAllIncident(){
-		List<Incident> incidents = incidentService.findAll(IncidentControllerConstants.DEFAULT_SORT_BY);
+		List<Incident> incidents = incidentService.findAll(IncidentControllerConstants.DEFAULT_SORT_BY, "", new ArrayList<String>(), "", "");
 
 		assertEquals(3, incidents.size());
 		
