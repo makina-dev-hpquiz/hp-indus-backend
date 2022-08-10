@@ -8,7 +8,7 @@ import com.makina.industrialisation.constants.IncidentControllerConstants;
 
 public class IncidentFilter {
 	
-	private final String NEGATIVE = "-";
+	private static final String NEGATIVE = "-";
 	
 	private String sortBy;
 	private String searchBy;
@@ -19,7 +19,7 @@ public class IncidentFilter {
 	public IncidentFilter(String sortBy, String searchBy, String[] status, String priorityLevel, String incidentType){
 		this.sortBy = sortBy;
 		this.searchBy = searchBy;
-		this.status = (status != null) ? new ArrayList<String>(Arrays.asList(status)) : new ArrayList<String>();
+		this.status = (status != null) ? new ArrayList<>(Arrays.asList(status)) : new ArrayList<>();
 		this.priorityLevel = priorityLevel;
 		this.incidentType = incidentType;
 	}
@@ -56,7 +56,7 @@ public class IncidentFilter {
 	}
 	
 	public boolean hasValidSortBy() {
-		return isNotEmpty(this.sortBy)? this.sortBy.equals(IncidentControllerConstants.DEFAULT_SORT_BY) || this.sortBy.equals(NEGATIVE+IncidentControllerConstants.DEFAULT_SORT_BY): false;		
+		return isNotEmpty(this.sortBy) && (this.sortBy.equals(IncidentControllerConstants.DEFAULT_SORT_BY) || this.sortBy.equals(NEGATIVE+IncidentControllerConstants.DEFAULT_SORT_BY));		
 	}
 	
 	public boolean hasValidSearchBy() {
@@ -67,7 +67,7 @@ public class IncidentFilter {
 		if(this.status == null) {
 			return false;
 		} else {
-			if(this.status.size() > 0) {
+			if(!this.status.isEmpty()){
 				for(String statusToValidate : this.status) {
 					if(!IncidentStatus.get().contains(statusToValidate)) {
 						return false;
@@ -80,15 +80,15 @@ public class IncidentFilter {
 		}
 	}
 	public boolean hasValidPriority() {
-		return isNotEmpty(this.priorityLevel)? IncidentPriority.get().contains(this.priorityLevel) : false;
+		return (isNotEmpty(this.priorityLevel) && IncidentPriority.get().contains(this.priorityLevel));
 	}
 	
 	public boolean hasValidIncidentType() {
-		return isNotEmpty(this.incidentType)? IncidentType.get().contains(this.incidentType) : false;
+		return (isNotEmpty(this.incidentType) && IncidentType.get().contains(this.incidentType));
 	}
 	
 	private boolean isNotEmpty(String str) {
-		return str != null && !str.equals("") ? true : false;
+		return (str != null && !str.equals(""));
 	}
 	
 

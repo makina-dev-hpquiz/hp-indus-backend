@@ -11,6 +11,10 @@ public class IncidentPriority{
 	
 	public static final String NONE_SEARCH = "aucune";
 
+	private IncidentPriority() {
+	    throw new IllegalStateException("Utility class");
+	}
+	
 	public static List<String> get(){
 		return Arrays.asList(LOW, NORMAL, HIGHT);	
 	}

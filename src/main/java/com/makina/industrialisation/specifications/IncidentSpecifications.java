@@ -6,8 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.makina.industrialisation.models.Incident;
-
-import annotations.com.makina.industrialisation.models.Incident_;
+import com.makina.industrialisation.models.Incident_;
 
 @Service
 public class IncidentSpecifications {
