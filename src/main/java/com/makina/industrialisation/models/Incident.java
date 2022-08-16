@@ -1,5 +1,9 @@
 package com.makina.industrialisation.models;
 
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -33,7 +37,7 @@ public class Incident{
 	@Column
 	private String priority;
 	@Column
-	private String date;
+	private java.sql.Date date;
 	@Column
 	private String type;
 	@Column
@@ -79,12 +83,13 @@ public class Incident{
 		this.priority = priority;
 	}
 
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 
 	public void setDate(String date) {
-		this.date = date;
+		LocalDate localDate = LocalDate.ofInstant(Instant.parse(date), ZoneId.systemDefault());
+        this.date = Date.valueOf(localDate);
 	}
 
 	public String getType() {

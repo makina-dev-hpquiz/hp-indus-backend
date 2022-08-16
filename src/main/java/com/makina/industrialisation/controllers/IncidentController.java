@@ -62,6 +62,9 @@ public class IncidentController {
 			if(!originalFilename.equals(FileManager.getName(oldIncident.getScreenshotPath()))) {
 				FileManager.deleteFile(oldIncident.getScreenshotPath());
 				savePicture(file, incident);
+			} else {
+				incident.setScreenshotPath(oldIncident.getScreenshotPath());
+				incident.setScreenshotWebPath(oldIncident.getScreenshotWebPath());
 			}
 		} else {
 			if(incident.getScreenshotPath().equals("")) {

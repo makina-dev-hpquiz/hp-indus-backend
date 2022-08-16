@@ -89,13 +89,13 @@ class IncidentControllerSpringBootTest {
 	
 	@BeforeAll
 	public static void setUp() {		
-		i1 = new IncidentDTO("Panneau de recherche n'est pas responsive", "Description", "", "", LOW_MSG, "28/07/2022", SCREEN_MSG, TODO_MSG);
-		i2 = new IncidentDTO("Erreur de texte : Question 145", "description", "", "", LOW_MSG, "31/07/2022", WORD_MSG, TODO_MSG);
-		i3 = new IncidentDTO("Le boutons ne sont pas alignés", "description", "", "", NORMAL_MSG, "15/06/2022", SCREEN_MSG, TODO_MSG);
-		i4 = new IncidentDTO("Erreur de texte : Question 146", "description", "", "", NORMAL_MSG, "09/08/2022", WORD_MSG, DOING_MSG);
-		i5 = new IncidentDTO("L'image ne s'affiche pas correctement", "description", "", "", NORMAL_MSG, "14/07/2022", SCREEN_MSG, DOING_MSG);
-		i6 = new IncidentDTO("L'application HpQuiz plante lorsqu'une question de type QCM est jouée.", "description", "", "", HIGHT_MSG, "15/07/2022", EVENT_MSG, DONE_MSG);
-		i7 = new IncidentDTO("Menu principal à corriger", "description", "", "", HIGHT_MSG, "16/07/2022", WORD_MSG, DONE_MSG);
+		i1 = new IncidentDTO("Panneau de recherche n'est pas responsive", "Description", "", "", LOW_MSG, "2022-07-28T00:00:00.000Z", SCREEN_MSG, TODO_MSG);
+		i2 = new IncidentDTO("Erreur de texte : Question 145", "description", "", "", LOW_MSG, "2022-07-31T00:00:00.000Z", WORD_MSG, TODO_MSG);
+		i3 = new IncidentDTO("Le boutons ne sont pas alignés", "description", "", "", NORMAL_MSG, "2022-06-15T00:00:00.000Z", SCREEN_MSG, TODO_MSG);
+		i4 = new IncidentDTO("Erreur de texte : Question 146", "description", "", "", NORMAL_MSG, "2022-08-09T00:00:00.000Z", WORD_MSG, DOING_MSG);
+		i5 = new IncidentDTO("L'image ne s'affiche pas correctement", "description", "", "", NORMAL_MSG, "2022-07-14T00:00:00.000Z", SCREEN_MSG, DOING_MSG);
+		i6 = new IncidentDTO("L'application HpQuiz plante lorsqu'une question de type QCM est jouée.", "description", "", "", HIGHT_MSG, "2022-07-15T00:00:00.000Z", EVENT_MSG, DONE_MSG);
+		i7 = new IncidentDTO("Menu principal à corriger", "description", "", "", HIGHT_MSG, "2022-07-16T00:00:00.000Z", WORD_MSG, DONE_MSG);
 		
 		byte[] content = null;
 		String contentType = "text/plain";
@@ -158,7 +158,7 @@ class IncidentControllerSpringBootTest {
 		assertTrue(result2.getBody().getScreenshotPath().contains(filename3));
 		assertTrue(result2.getBody().getScreenshotWebPath().contains(filename3));
 
-		result2 = this.incidentController.updateIncident(result2.getBody(), file3);
+		result2 = this.incidentController.updateIncident(i2, file3);
 		assertTrue(result2.getBody().getScreenshotPath().contains(filename3));
 		assertTrue(result2.getBody().getScreenshotWebPath().contains(filename3));
 
@@ -179,10 +179,10 @@ class IncidentControllerSpringBootTest {
 		assertEquals(incidents.get(0).getId(), i4.getId());
 		
 		// T2 : getIncidents : Avec tri inversé Le plus vieux TODO KO car pas de vrai date
-//		incidents = this.incidentController.getIncidents("-date", EMPTY_STRING, EMPTY_TAB);
-//		assertEquals(7, incidents.size());
-//		System.out.println(incidents.get(0).getTitle() +" : "+incidents.get(0).getDate());
-//		assertEquals(incidents.get(0).getId(), i3.getId());
+		incidents = this.incidentController.getIncidents("-"+IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, EMPTY_TAB, EMPTY_STRING, EMPTY_STRING);
+		assertEquals(7, incidents.size());
+		System.out.println(incidents.get(0).getTitle() +" : "+incidents.get(0).getDate());
+		assertEquals(incidents.get(0).getId(), i3.getId());
 		
 		// T3 : getIncidents : Avec tri (default) + 1 status
 		incidents = this.incidentController.getIncidents(IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, new String[]{TODO_MSG}, EMPTY_STRING, EMPTY_STRING); 
