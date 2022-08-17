@@ -28,11 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.makina.industrialisation.configuration.TomcatConfiguration;
 import com.makina.industrialisation.constants.IncidentControllerConstants;
+import com.makina.industrialisation.constants.IncidentPriority;
+import com.makina.industrialisation.constants.IncidentStatus;
+import com.makina.industrialisation.constants.IncidentType;
 import com.makina.industrialisation.dto.IncidentDTO;
 import com.makina.industrialisation.models.Incident;
-import com.makina.industrialisation.models.IncidentPriority;
-import com.makina.industrialisation.models.IncidentStatus;
-import com.makina.industrialisation.models.IncidentType;
 
 
 /**

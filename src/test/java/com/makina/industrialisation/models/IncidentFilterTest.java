@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.makina.industrialisation.constants.IncidentControllerConstants;
+import com.makina.industrialisation.constants.IncidentPriority;
+import com.makina.industrialisation.constants.IncidentStatus;
+import com.makina.industrialisation.constants.IncidentType;
 
 public class IncidentFilterTest {
 

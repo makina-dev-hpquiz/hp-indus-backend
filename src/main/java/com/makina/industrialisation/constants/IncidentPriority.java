@@ -1,8 +1,10 @@
-package com.makina.industrialisation.models;
+package com.makina.industrialisation.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.makina.industrialisation.models.IncidentProperty;
 
 public class IncidentPriority{
 
@@ -27,4 +29,7 @@ public class IncidentPriority{
 		return searchPriorities;
 	}
 	
+	public static IncidentProperty getIncidentProperty(){
+		return new IncidentProperty(get(), getSearch(), NORMAL);
+	}
 }

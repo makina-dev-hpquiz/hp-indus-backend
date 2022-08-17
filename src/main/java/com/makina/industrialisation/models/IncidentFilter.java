@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.makina.industrialisation.constants.IncidentControllerConstants;
+import com.makina.industrialisation.constants.IncidentPriority;
+import com.makina.industrialisation.constants.IncidentStatus;
+import com.makina.industrialisation.constants.IncidentType;
 
 public class IncidentFilter {
 	

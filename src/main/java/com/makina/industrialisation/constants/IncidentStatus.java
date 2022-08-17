@@ -1,7 +1,9 @@
-package com.makina.industrialisation.models;
+package com.makina.industrialisation.constants;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.makina.industrialisation.models.IncidentProperty;
 
 public class IncidentStatus{
 
@@ -15,5 +17,9 @@ public class IncidentStatus{
 	
 	public static List<String> get(){
 		return Arrays.asList(TO_DO, DOING, DONE);	
-	}	
+	}
+	
+	public static IncidentProperty getIncidentProperty(){
+		return new IncidentProperty(get(), null, TO_DO);
+	}
 }
