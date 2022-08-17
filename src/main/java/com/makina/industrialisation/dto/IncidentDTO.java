@@ -12,13 +12,14 @@ public class IncidentDTO {
 	private String status;
 	private String priority;
 	private String updatedAt;
+	private String createdAt;
 	private String type;
 	
 	public IncidentDTO() {
 	}
 	
 	public IncidentDTO(String title, String description, String screenshotPath,
-			 String screenshotWebPath, String priority, String updatedAt, String type, String status) {
+			 String screenshotWebPath, String priority, String updatedAt, String createdAt, String type, String status) {
 		
 		this.title = title;
 		this.description = description;
@@ -26,6 +27,7 @@ public class IncidentDTO {
 		this.screenshotWebPath = screenshotWebPath;
 		this.priority = priority;
 		this.updatedAt = updatedAt;
+		this.createdAt = createdAt;
 		this.type = type;
 		this.status = status;
 	}
@@ -84,6 +86,14 @@ public class IncidentDTO {
 
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public String getType() {

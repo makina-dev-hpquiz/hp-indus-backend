@@ -37,6 +37,8 @@ public class Incident{
 	@Column
 	private Timestamp updatedAt;
 	@Column
+	private Timestamp createdAt;
+	@Column
 	private String type;
 	@Column
 	private String status;
@@ -89,6 +91,12 @@ public class Incident{
 		this.updatedAt= Timestamp.from(Instant.parse(date));
 	}
 
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(String date) {
+		this.createdAt = Timestamp.from(Instant.parse(date));
+	}
 	public String getType() {
 		return type;
 	}

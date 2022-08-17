@@ -89,13 +89,13 @@ class IncidentControllerSpringBootTest {
 	
 	@BeforeAll
 	public static void setUp() {		
-		i1 = new IncidentDTO("Panneau de recherche n'est pas responsive", "Description", "", "", LOW_MSG, "2022-07-28T00:00:00.000Z", SCREEN_MSG, TODO_MSG);
-		i2 = new IncidentDTO("Erreur de texte : Question 145", "description", "", "", LOW_MSG, "2022-07-31T00:00:00.000Z", WORD_MSG, TODO_MSG);
-		i3 = new IncidentDTO("Le boutons ne sont pas alignés", "description", "", "", NORMAL_MSG, "2022-06-15T00:00:00.000Z", SCREEN_MSG, TODO_MSG);
-		i4 = new IncidentDTO("Erreur de texte : Question 146", "description", "", "", NORMAL_MSG, "2022-08-09T00:00:00.000Z", WORD_MSG, DOING_MSG);
-		i5 = new IncidentDTO("L'image ne s'affiche pas correctement", "description", "", "", NORMAL_MSG, "2022-07-14T00:00:00.000Z", SCREEN_MSG, DOING_MSG);
-		i6 = new IncidentDTO("L'application HpQuiz plante lorsqu'une question de type QCM est jouée.", "description", "", "", HIGHT_MSG, "2022-07-15T00:00:00.000Z", EVENT_MSG, DONE_MSG);
-		i7 = new IncidentDTO("Menu principal à corriger", "description", "", "", HIGHT_MSG, "2022-07-16T00:00:00.000Z", WORD_MSG, DONE_MSG);
+		i1 = new IncidentDTO("Panneau de recherche n'est pas responsive", "Description", "", "", LOW_MSG, "2022-07-28T00:00:00.000Z", "2022-07-28T00:00:00.000Z", SCREEN_MSG, TODO_MSG);
+		i2 = new IncidentDTO("Erreur de texte : Question 145", "description", "", "", LOW_MSG, "2022-07-31T00:00:00.000Z", "2022-07-31T00:00:00.000Z", WORD_MSG, TODO_MSG);
+		i3 = new IncidentDTO("Le boutons ne sont pas alignés", "description", "", "", NORMAL_MSG, "2022-06-15T00:00:00.000Z", "2022-06-15T00:00:00.000Z", SCREEN_MSG, TODO_MSG);
+		i4 = new IncidentDTO("Erreur de texte : Question 146", "description", "", "", NORMAL_MSG, "2022-08-09T00:00:00.000Z", "2022-08-09T00:00:00.000Z", WORD_MSG, DOING_MSG);
+		i5 = new IncidentDTO("L'image ne s'affiche pas correctement", "description", "", "", NORMAL_MSG, "2022-07-14T00:00:00.000Z", "2022-07-14T00:00:00.000Z", SCREEN_MSG, DOING_MSG);
+		i6 = new IncidentDTO("L'application HpQuiz plante lorsqu'une question de type QCM est jouée.", "description", "", "", HIGHT_MSG, "2022-07-15T00:00:00.000Z", "2022-07-15T00:00:00.000Z", EVENT_MSG, DONE_MSG);
+		i7 = new IncidentDTO("Menu principal à corriger", "description", "", "", HIGHT_MSG, "2022-07-16T00:00:00.000Z", "2022-07-16T00:00:00.000Z", WORD_MSG, DONE_MSG);
 		
 		byte[] content = null;
 		String contentType = "text/plain";

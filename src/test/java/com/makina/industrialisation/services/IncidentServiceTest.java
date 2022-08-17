@@ -49,6 +49,7 @@ class IncidentServiceTest {
 		i1DTO.setScreenshotWebPath("http://localhost:8080/images/test1.jpg");
 		i1DTO.setPriority("Normal");
 		i1DTO.setUpdatedAt("2022-05-31T13:26:10.144Z");
+		i1DTO.setCreatedAt("2022-05-31T13:26:10.144Z");
 		i1DTO.setType("Interface");
 		i1DTO.setType("En cours");
 		
@@ -57,6 +58,7 @@ class IncidentServiceTest {
 		i2DTO.setDescription("Description de Test2");
 		i2DTO.setPriority("Normal");
 		i2DTO.setUpdatedAt("2022-06-02T15:26:10.144Z");
+		i2DTO.setCreatedAt("2022-06-02T15:26:10.144Z");
 		i2DTO.setType("Interface");
 		i2DTO.setType("En cours");
 		
@@ -67,6 +69,7 @@ class IncidentServiceTest {
 		i3DTO.setScreenshotWebPath("");
 		i3DTO.setPriority("Normal");
 		i3DTO.setUpdatedAt("2022-05-31T13:26:10.144Z");
+		i3DTO.setCreatedAt("2022-05-31T13:26:10.144Z");
 		i3DTO.setType("Interface");
 		i3DTO.setType("En cours");
 		
