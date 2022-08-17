@@ -11,21 +11,21 @@ public class IncidentDTO {
 	private String screenshotWebPath;
 	private String status;
 	private String priority;
-	private String date;
+	private String updatedAt;
 	private String type;
 	
 	public IncidentDTO() {
 	}
 	
 	public IncidentDTO(String title, String description, String screenshotPath,
-			 String screenshotWebPath, String priority, String date, String type, String status) {
+			 String screenshotWebPath, String priority, String updatedAt, String type, String status) {
 		
 		this.title = title;
 		this.description = description;
 		this.screenshotPath = screenshotPath;
 		this.screenshotWebPath = screenshotWebPath;
 		this.priority = priority;
-		this.date = date;
+		this.updatedAt = updatedAt;
 		this.type = type;
 		this.status = status;
 	}
@@ -78,12 +78,12 @@ public class IncidentDTO {
 		this.priority = priority;
 	}
 
-	public String getDate() {
-		return date;
+	public String getUpdatedAt() {
+		return updatedAt;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public String getType() {

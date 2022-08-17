@@ -66,7 +66,7 @@ public class IncidentControllerMockMvcTest {
 		i1.setScreenshotPath("http://localhost:8080/images/test1.jpg");
 		i1.setScreenshotWebPath("C:\\apache-tomcat-9.0.55\\webapps\\images\\test1.jpg");
 		i1.setPriority("Normal");
-		i1.setDate("2022-05-31T13:26:10.144Z");
+		i1.setUpdatedAt("2022-05-31T13:26:10.144Z");
 		i1.setType("Interface");
 		
 		i2 = new IncidentDTO();
@@ -76,7 +76,7 @@ public class IncidentControllerMockMvcTest {
 		i2.setScreenshotPath("http://localhost:8080/images/test2.jpg");
 		i2.setScreenshotWebPath("C:\\apache-tomcat-9.0.55\\webapps\\images\\test2.jpg");
 		i2.setPriority("Normal");
-		i2.setDate("2022-06-02T15:26:10.144Z");
+		i2.setUpdatedAt("2022-06-02T15:26:10.144Z");
 		i2.setType("Interface");
 		
 		i3 = new IncidentDTO();
@@ -86,7 +86,7 @@ public class IncidentControllerMockMvcTest {
 		i3.setScreenshotPath("http://localhost:8080/images/test3.jpg");
 		i3.setScreenshotWebPath("C:\\apache-tomcat-9.0.55\\webapps\\images\\test3.jpg");
 		i3.setPriority("Normal");
-		i3.setDate("2022-06-06T15:26:10.144Z");
+		i3.setUpdatedAt("2022-06-06T15:26:10.144Z");
 		i3.setType("Interface");
 		
 		String filename = "test.txt";

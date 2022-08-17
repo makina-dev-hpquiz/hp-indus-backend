@@ -79,6 +79,7 @@ public class IncidentController {
 	
 	@PostMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IncidentDTO> saveIncident(IncidentDTO incidentDTO, MultipartFile file) {
+		logger.debug(incidentDTO.getUpdatedAt());
 		Incident incident = modelMapper.map(incidentDTO, Incident.class);
 		logger.debug("Appel de l'API saveIncident");
 

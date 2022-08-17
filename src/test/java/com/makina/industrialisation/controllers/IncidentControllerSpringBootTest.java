@@ -181,7 +181,7 @@ class IncidentControllerSpringBootTest {
 		// T2 : getIncidents : Avec tri inversé Le plus vieux TODO KO car pas de vrai date
 		incidents = this.incidentController.getIncidents("-"+IncidentControllerConstants.DEFAULT_SORT_BY, EMPTY_STRING, EMPTY_TAB, EMPTY_STRING, EMPTY_STRING);
 		assertEquals(7, incidents.size());
-		System.out.println(incidents.get(0).getTitle() +" : "+incidents.get(0).getDate());
+		System.out.println(incidents.get(0).getTitle() +" : "+incidents.get(0).getUpdatedAt());
 		assertEquals(incidents.get(0).getId(), i3.getId());
 		
 		// T3 : getIncidents : Avec tri (default) + 1 status

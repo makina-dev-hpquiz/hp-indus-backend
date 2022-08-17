@@ -42,7 +42,6 @@ public class IncidentService {
 	 * @return List<Incident>
 	 */
 	public List<Incident> findAll(IncidentFilter incidentFilter){
-//		String sortBy, String searchBy, List<String> status, String priorityLevel, String incidentType
 		Sort sort = incidentFilter.getSortBy().contains("-") ? Sort.by(incidentFilter.getSortBy().substring(1, incidentFilter.getSortBy().length())).ascending() : Sort.by(incidentFilter.getSortBy()).descending();
 		Specification<Incident> spec = null;
 		if(incidentFilter.hasValidStatus()) {
@@ -51,7 +50,7 @@ public class IncidentService {
 		if(incidentFilter.hasValidPriority()) {
 			spec = incidentSpecification.addSpecification(spec, incidentSpecification.hasPriority(incidentFilter.getPriorityLevel()));
 		}
-		if(incidentFilter.hasValidIncidentType()) { //TODO
+		if(incidentFilter.hasValidIncidentType()) {
 			spec = incidentSpecification.addSpecification(spec, incidentSpecification.isType(incidentFilter.getIncidentType()));
 		}
 		if(incidentFilter.hasValidSearchBy()) {

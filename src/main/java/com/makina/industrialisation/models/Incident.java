@@ -1,10 +1,7 @@
 package com.makina.industrialisation.models;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -38,7 +35,7 @@ public class Incident{
 	@Column
 	private String priority;
 	@Column
-	private Timestamp date;
+	private Timestamp updatedAt;
 	@Column
 	private String type;
 	@Column
@@ -84,12 +81,12 @@ public class Incident{
 		this.priority = priority;
 	}
 
-	public Timestamp getDate() {
-		return date;
+	public Timestamp getUpdatedAt() {
+		return updatedAt;
 	}
 
-	public void setDate(String date) {
-		this.date= Timestamp.from(Instant.parse(date));
+	public void setUpdatedAt(String date) {
+		this.updatedAt= Timestamp.from(Instant.parse(date));
 	}
 
 	public String getType() {
