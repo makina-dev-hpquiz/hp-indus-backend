@@ -120,6 +120,7 @@ public class IncidentController {
 		incidentService.deleteIncidentById(id);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
+	
 
 	/**
 	 * Effectue les différentes actions d'enregistrement d'une image :
