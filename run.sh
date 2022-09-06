@@ -29,11 +29,6 @@ echo ;
 nohup mvn spring-boot:run & echo $! > ./pid.file &
 echo "HP-INDUS-BACKEND démarré, il sera dispoible dans quelques instants."
 
-
-start "" "http://"$ipaddr":8082/apks/last"
-curl $ipaddr+":8082/apks/last"
-echo ;
-
 #HP-Indus-Frontend
 cd ../hp-indus-frontend/
 ./run.sh
