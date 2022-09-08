@@ -30,8 +30,6 @@ cd ../../
 nohup mvn spring-boot:run & echo $! > ./pid.file &
 echo "HP-INDUS-BACKEND démarré, il sera dispoible dans quelques instants."
 
-#HP-Indus-Frontend
-cd ../hp-indus-frontend/
-./run.sh
+start "http://"$ipaddr":8080/hp-indus/" 
 
 read

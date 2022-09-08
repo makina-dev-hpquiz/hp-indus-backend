@@ -19,7 +19,6 @@ echo ;
 
 #Extinction des applications
 #HP-Indus-Backend
-
 cd ../../
 echo "EXTINCTION DE HP-INDUS-BACKEND - PID : " $(cat ./pid.file)
 kill $(cat ./pid.file)
@@ -31,8 +30,6 @@ wait -n $(cat ./pid.file);
 rm pid.file
 rm nohup.out
 
-#HP-Indus-Frontend
-cd ../hp-indus-frontend/
-bash stop.sh
+
 
 
