@@ -1,5 +1,4 @@
-#Fichier sh utilitaire actuellement construit pour s'utiliser en environnement de développement
-echo "[PROD MODE] Démarrage de la plateforme HP-QUIZ "
+echo "[PROD MODE] Démarrage de la plateforme HP-INDUS "
 echo "Les services suivants vont être démarrés :"
 
 echo "* Apache tomcat 9.0.55"

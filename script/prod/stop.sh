@@ -1,5 +1,4 @@
-#Fichier sh utilitaire actuellement construit pour s'utiliser en environnement de développement
-echo "[PROD MODE] Extinction de la plateforme HP-QUIZ"
+echo "[PROD MODE] Extinction de la plateforme HP-INDUS"
 echo ;
 echo "Les services suivants vont être arrêtés :"
 echo ;

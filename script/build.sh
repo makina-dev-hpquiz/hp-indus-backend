@@ -1,4 +1,4 @@
-echo "BUILD Script"
+echo "BUILD HP-INDUS-BACKEND"
 
 cd ..
 
@@ -7,7 +7,7 @@ folder=hp-indus-backend
 targetFolder=target
 scriptFolder=script
 
-mvn clean package -DskipTests
+mvn clean package
 cd $targetFolder
 
 echo "Creation du répertoire "$folder" est déplacement des items générés dedans"
