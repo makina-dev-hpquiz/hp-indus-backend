@@ -13,7 +13,7 @@
 	<artifactId>hp_indus_backend</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
 	<name>hp_indus_backend</name>
-	<description>Application backend proposant des services d'API tel que le téchargement des APK et une gestion de ticket</description>
+	<description>Application backend proposant des services d'API tels que le téléchargement des APK et une gestion de ticket</description>
 	<properties>
 		<java.version>8</java.version>
 	</properties>	
