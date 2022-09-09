@@ -124,9 +124,18 @@ Cette extension met en forme les retours Json.
 
 ## Configuration
 
-## Commandes
+## Commandes de lancement
+
+Les scripts on pour objectif de démarrer/eteindre plusieurs logiciels :
+* Lui-même hp-indus-backend
+* hp-indus-frontend
+* tomcat
+
+### En mode développement
+Les scripts sont présents dans le répertoire script/dev/
 
 2 fichiers sh de commandes sont disponibles permettant de lancer et éteindre l'application web
+
 ```
 ./run.sh
 ```
@@ -135,10 +144,52 @@ Cette extension met en forme les retours Json.
 ./stop.sh
 ```
 
+
+
+### En mode production
+
+En mode production hp-indus-frontend n'est pas démarré, il est présent dans le tomcat
+
+Les scripts sont présents dans le réperetoire script/prod/
+
+```
+./run.sh
+```
+
+```
+./stop.sh
+```
+
+
 L'application est accessible à l'adresse :
+
 ```
 http://localhost:8082
 ```
+
 ```
 http://[ip-addr]:8082
 ```
+
+## Build de l'application
+
+Pour build l'application, utiliser la commande suivante :
+
+```
+mvn clean package
+```
+
+hp_indus_backend.jar est généré dans le répertoire target/
+
+Il est éxecutable avec la commande :
+
+```
+java -jar hp_indus_backend.jar
+```
+
+Le script script/build.sh permet de build l'application est de reconstituer un répertoire hp-indus-backend prêt à être utilisé.
+
+
+
+
+

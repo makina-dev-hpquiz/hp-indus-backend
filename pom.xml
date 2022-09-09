@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.makina</groupId>
-	<artifactId>harry_potter_quiz_indus_backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>harry_potter_quiz_indus_backend</name>
-	<description>Demo project for Spring Boot</description>
+	<artifactId>hp_indus_backend</artifactId>
+	<version>1.0.1-SNAPSHOT</version>
+	<name>hp_indus_backend</name>
+	<description>Application backend proposant des services d'API tel que le téchargement des APK et une gestion de ticket</description>
 	<properties>
 		<java.version>8</java.version>
 	</properties>	
@@ -76,6 +76,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>hp_indus_backend</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -98,6 +99,26 @@
 		            </goals>
 		        </execution>
 		    </executions>
+			</plugin>
+			<plugin>
+			    <artifactId>maven-resources-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <id>copy-resource-one</id>
+			            <phase>generate-sources</phase>
+			            <goals>
+			                <goal>copy-resources</goal>
+			            </goals>
+			            <configuration>
+			                <outputDirectory>target/script</outputDirectory>
+			                <resources>
+			                    <resource>
+			                        <directory>script/prod</directory>
+			                    </resource>
+			                </resources>
+			            </configuration>
+			        </execution>
+			    </executions>
 			</plugin>
 		</plugins>
 	</build>

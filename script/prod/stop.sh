@@ -1,12 +1,11 @@
 #Fichier sh utilitaire actuellement construit pour s'utiliser en environnement de développement
-echo "[DEV MODE] Extinction de la plateforme HP-QUIZ"
+echo "[PROD MODE] Extinction de la plateforme HP-QUIZ"
 echo ;
 echo "Les services suivants vont être arrêtés :"
 echo ;
 echo "* Apache tomcat 9.0.55"
 # echo "* BDD Postgreql"
 echo "* HP-INDUS-BACKEND"
-echo "* HP-INDUS-FRONTED"
 echo ;
 
 #Extinction de tomcat
@@ -19,7 +18,6 @@ echo ;
 
 #Extinction des applications
 #HP-Indus-Backend
-cd ../../
 echo "EXTINCTION DE HP-INDUS-BACKEND - PID : " $(cat ./pid.file)
 kill $(cat ./pid.file)
 echo ;
