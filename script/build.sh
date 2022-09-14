@@ -1,11 +1,8 @@
 echo "BUILD HP-INDUS-BACKEND"
 
+source params.sh
 cd ..
 
-rootFolder=$(pwd)
-folder=hp-indus-backend
-targetFolder=target
-scriptFolder=script
 
 mvn clean package
 cd $targetFolder
