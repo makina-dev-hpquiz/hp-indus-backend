@@ -45,7 +45,7 @@ Dans un nouveau terminal, executer la commande mvn --version pour vérifier la b
 
 Utiliser la commande suivante pour récupérer les dépendances :
 ```
-mvn clean install --DskipTests
+mvn clean install -DskipTests
 ```
 
 
