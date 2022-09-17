@@ -101,6 +101,16 @@ Ajouter à l'utilisateur appli, les privilèges :
 
 Créer la base de données incident avec comme propriétaire l'utilisateur appli
 
+-----
+
+Configurer le chemin d'accès PGAdmin au repértoire d'installation de postgresql pour les notions de dump via l'outil.
+
+Dans PGAdmin :
+* Cliquer sur Files => Preférences
+* Dans la nouvelle boite de dialogue, chercher Paths => Binary Paths
+* Dans le second tableau Postgresql Binary Path :  
+* Indiquer pour Postgresql 14 => C:\Program Files\PostgreSQL\14\bin (repertoire d'installation). 
+
 #### Sonarqube 
 J'ai télécharger la version standalone à installer directement sur son poste.
 Lors de l'installation, choisir : 
