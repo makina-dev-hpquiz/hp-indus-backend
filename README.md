@@ -1,7 +1,5 @@
 # HP-INDUS-BACKEND
 
-
-
 Cette plateforme a pour objectif de servir le projet principal HP-QUIZ en proposant plusieurs outils à la fois de débug mais également de suivi de projet. 
 L'application est utilisable sur navigateur (chrome) ainsi que sur navigateur mobile.
 
@@ -18,7 +16,7 @@ L'application serveur fonctionne avec
 ## Installation
 
 * Eclipse https://www.eclipse.org/downloads/
-* Git
+* Git https://git-scm.com/
 * maven https://maven.apache.org/
 * tomcat https://tomcat.apache.org/
 * sonarqube https://docs.sonarqube.org/latest/setup/get-started-2-minutes/
